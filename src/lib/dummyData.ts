@@ -14,7 +14,7 @@ export const notebooks: Notebook[] = [
   },
   {
     id: "notebook-002",
-    name: "Personal Development",
+    name: "Personal Development Plan",
     user: userId,
     description: "Track goals, habits, and personal projects.",
     colour: "#34A853", // Google Green

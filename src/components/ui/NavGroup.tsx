@@ -12,7 +12,7 @@ const NavGroupItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AccordionPrimitive.Item
     ref={ref}
-    className={cn("border-b", className)}
+    className={cn(className)}
     {...props}
   />
 ))
@@ -26,7 +26,7 @@ const NavGroupTrigger = React.forwardRef<
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(
-        "flex flex-1 items-center justify-between py-4 text-sm font-medium transition-all hover:underline text-left [&[data-state=open]>svg]:rotate-180",
+        "flex flex-1 items-center h-fit justify-between py-1 text-md font-medium transition-all hover:bg-zinc-200 text-left [&[data-state=open]>svg]:rotate-180 ring-0 outline-none focus:outline-none focus-visible:outline-none border-0 bg-transparent px-2 [&[data-state=open]]:bg-zinc-300",
         className
       )}
       {...props}
@@ -44,10 +44,10 @@ const NavGroupContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className="overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+    className="overflow-hidden text-md data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
     {...props}
   >
-    <div className={cn("pb-4 pt-0", className)}>{children}</div>
+    <div className={cn("py-2", className)}>{children}</div>
   </AccordionPrimitive.Content>
 ))
 NavGroup.displayName = AccordionPrimitive.Content.displayName
