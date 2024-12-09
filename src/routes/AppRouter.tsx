@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Outlet, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 // Pages
 import Dashboard from "@/pages/Dashboard";
@@ -20,6 +20,11 @@ const AppRouter: React.FC = () => {
                 {/* Application Dashboard */}
                 <Route path="/app" element={<MainLayout />}>
                     <Route index element={<Dashboard />} />
+                    <Route path="notebook/:notebookId" element={<Outlet />} >
+                        <Route path="section/:sectionId" element={<Outlet />}>
+                            <Route path="page/:pageId" element={<Outlet />} />
+                        </Route>
+                    </Route>
                 </Route>
 
                 {/* Catch-All Route for 404 */}

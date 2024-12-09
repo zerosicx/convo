@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Type Aliases for ID References
 type UserId = string;
 type NotebookId = string;
