@@ -1,7 +1,11 @@
 import NoteMeta from "@/components/ui/NoteMeta";
+import { BlockNoteView, lightDefaultTheme } from "@blocknote/mantine";
+import { useCreateBlockNote } from "@blocknote/react";
 import { useParams } from "react-router-dom";
 
 const NotePage = () => {
+
+    const editor = useCreateBlockNote();
 
     const params = useParams();
     if (!params.pageId) {
@@ -11,9 +15,13 @@ const NotePage = () => {
             </div>
         )
     }
+
     return (
         <div>
             <NoteMeta />
+            <main className="w-full h-full">
+                <BlockNoteView editor={editor} theme={lightDefaultTheme} />
+            </main>
         </div>
     )
 }

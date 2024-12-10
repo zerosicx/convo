@@ -41,7 +41,7 @@ const NoteMeta = () => {
     }
 
     return (
-        <div className="flex flex-col w-full h-40 items-start p-3">
+        <div className="flex flex-col w-full h-32 items-start p-3">
             <section>
                 <p>
                     {
@@ -49,7 +49,7 @@ const NoteMeta = () => {
                     }
                 </p>
             </section>
-            <main className="py-4">
+            <main className="pt-8 px-6">
                 {
                     !editing && <h1 className="text-4xl" onClick={handleTitleClick}>{currentPage?.title}</h1>
                 }
