@@ -43,7 +43,7 @@ const NoteMeta = () => {
     return (
         <div className="flex flex-col w-full h-32 items-start p-3">
             <section>
-                <p>
+                <p className="text-sm">
                     {
                         `${notebookName} / ${sectionName} / ${currentPage?.title}`
                     }

@@ -34,7 +34,7 @@ const NavBar = () => {
                 <h2 className="text-3xl title-font">Mizu</h2>
             </header>
             <div className="px-4">
-                <Input startIcon={Search} placeholder='Search' className="bg-zinc-800 rounded-md border-blue-600 border-[1px]" />
+                <Input startIcon={Search} placeholder='Search' className="bg-zinc-800 rounded-sm border-blue-600 border-[1px] h-7" />
             </div>
             <div className="flex flex-col w-full px-4 items-start">
                 <Label className="text-xs text-muted-foreground">NOTEBOOKS</Label>
