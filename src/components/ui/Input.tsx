@@ -1,18 +1,37 @@
 import { cn } from "@/lib/utils";
+import { cva, VariantProps } from "class-variance-authority";
 import { LucideIcon } from "lucide-react";
 import * as React from "react";
 
-interface InputProps extends React.ComponentProps<"input"> {
+const inputVariants = cva(
+  "flex-1 bg-transparent px-3 py-1 placeholder:text-muted-foreground focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        default: "text-base md:text-sm",
+        title: "placeholder:text-4xl text-4xl border-0 border-b-2 border-blue-300 text-blue animate-pulse focus:animate-none"
+      }
+    },
+    defaultVariants: {
+      variant: "default"
+    }
+  }
+)
+
+
+interface InputProps extends React.ComponentProps<"input">, VariantProps<typeof inputVariants> {
+  asChild?: boolean;
   startIcon?: LucideIcon;  // Optional start icon
   endIcon?: LucideIcon;    // Optional end icon
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, startIcon: StartIcon, endIcon: EndIcon, ...props }, ref) => {
+  ({ className, variant, type, startIcon: StartIcon, endIcon: EndIcon, ...props }, ref) => {
     return (
       <div
         className={cn(
-          "relative flex h-9 w-full items-center rounded-md border border-input bg-transparent shadow-sm transition-colors focus-within:ring-1 focus-within:ring-ring",
+          "relative flex h-9 w-full items-center",
+          variant === "default" && "rounded-md border border-input bg-transparent shadow-sm transition-colors focus-within:ring-1 focus-within:ring-ring",
           className
         )}
       >
@@ -27,9 +46,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={type}
           className={cn(
-            "flex-1 bg-transparent px-3 py-1 text-base placeholder:text-muted-foreground focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
             StartIcon ? "ml-2" : "",
-            EndIcon ? "mr-2" : ""
+            EndIcon ? "mr-2" : "",
+            inputVariants({ variant }),
           )}
           ref={ref}
           {...props}
@@ -48,4 +67,5 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
 Input.displayName = "Input";
 
-export { Input };
+export { Input, inputVariants };
+

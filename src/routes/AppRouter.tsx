@@ -2,10 +2,8 @@ import React from "react";
 import { Outlet, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 // Pages
-import Dashboard from "@/pages/Dashboard";
 import ErrorPage from "@/pages/ErrorPage";
 import LandingPage from "@/pages/LandingPage";
-
 
 // Layout
 import MainLayout from "@/layouts/MainLayout";
@@ -19,7 +17,7 @@ const AppRouter: React.FC = () => {
 
                 {/* Application Dashboard */}
                 <Route path="/app" element={<MainLayout />}>
-                    <Route index element={<Dashboard />} />
+                    <Route index element={<Outlet />} />
                     <Route path="notebook/:notebookId" element={<Outlet />} >
                         <Route path="section/:sectionId" element={<Outlet />}>
                             <Route path="page/:pageId" element={<Outlet />} />
