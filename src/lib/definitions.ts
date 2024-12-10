@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // Type Aliases for ID References
-type UserId = string;
-type NotebookId = string;
-type SectionId = string;
-type PageId = string;
+export type UserId = string;
+export type NotebookId = string;
+export type SectionId = string;
+export type PageId = string;
 
 /**
  * Interface for Notebook

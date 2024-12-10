@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom"
 
 const LandingPage = () => {
     return (
-        <div className="w-full h-screen flex flex-col items-center justify-center">
+        <div className="w-screen h-screen flex flex-col items-center justify-center">
             <div className="flex flex-row justify-between fixed top-0 h-16 items-center gap-2 w-full p-2">
                 <h2 className="text-3xl font-bold">Mizu</h2>
                 <div>
