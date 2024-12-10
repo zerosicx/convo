@@ -39,7 +39,10 @@ export interface Page {
   sectionId: SectionId; // Parent section reference
   parentPageId?: PageId | null; // Reference to the parent page (optional)
   title: string; // Page title
-  data: any; // Main page content (replaced "content")
+  data: any; // Main page content
   path: string; // Hierarchical path (e.g., "section/page")
   level: number; // Nesting level in the tree (0 = root)
+  creationDate: Date;
+  editedDate: Date;
+  archived: boolean;
 }

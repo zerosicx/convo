@@ -5,10 +5,10 @@ import { BookText, ChevronDown, ChevronUp, Droplets, PlusCircle, Search } from '
 import { useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import { Button } from './Button';
-import { Input } from './input';
-import { Label } from './label';
+import { Input } from './Input';
+import { Label } from './Label';
 import { NavGroup, NavGroupContent, NavGroupItem, NavGroupTrigger } from './NavGroup';
-import { ScrollArea, ScrollBar } from './scroll-area';
+import { ScrollArea, ScrollBar } from './ScrollArea';
 
 export const Navigator = () => {
     return (
@@ -29,7 +29,10 @@ const NavBar = () => {
 
     return (
         <Sidebar>
-            <header className="flex flex-row gap-4 items-center px-4"><Droplets className="text-blue-500" /><h2 className="text-2xl">Mizu</h2></header>
+            <header className="flex flex-row gap-4 items-center p-4 pb-2">
+                <Droplets className="text-blue-500" />
+                <h2 className="text-2xl">Mizu</h2>
+            </header>
             <div className="px-4">
                 <Input startIcon={Search} placeholder='Search' className="bg-zinc-50" />
             </div>
@@ -139,19 +142,26 @@ const PageItem = ({ currentPage }: {
     // Level will be a multiplier for nesting
     return (
         <div style={{ marginLeft: `${4 * currentPage.level}px` }}>
-            <div className={cn("flex flex-row jusitfy-between w-full items-center", params.pageId === currentPage.id && "bg-blue-200")}>
+            <div className={cn("flex flex-row justify-between w-full items-center", params.pageId === currentPage.id && "bg-blue-200")}>
                 <NavLink to={`notebook/${getNotebookId(currentPage.path)}/section/${sectionId}/page/${currentPage.id}`} >
                     <div className={cn("text-left p-2 text-primary",
                     )}>
-                        <h4 className="max-w-48 truncate">{currentPage.title}</h4>
+                        <h4 className="truncate" style={{
+                            maxWidth: `${192 - currentPage.level * 12}px`
+                        }}
+                            title={currentPage.title}>{currentPage.title}</h4>
                     </div>
                 </NavLink >
-                {
-                    open && <Button size="icon" variant="ghost" onClick={() => { setOpen(!open) }}><ChevronUp className="w-4 h-4" /></Button>
-                }
-                {
-                    !open && <Button size="icon" variant="ghost" onClick={() => { setOpen(!open) }}><ChevronDown className="w-4 h-4" /></Button>
-                }
+                <div className="mr-4">
+                    <Button size="icon" variant="ghost" onClick={() => { setOpen(!open) }} >
+                        {
+                            open && <ChevronUp className="w-4 h-4" />
+                        }
+                        {
+                            !open && <ChevronDown className="w-4 h-4" />
+                        }
+                    </Button>
+                </div>
             </div>
             {
                 open &&

@@ -113,6 +113,9 @@ export const pages: Page[] = [
     data: "Covering arrays, linked lists, trees, and graphs.",
     path: "notebook-001/section-001/page-001",
     level: 0,
+    creationDate: new Date("2024-01-01T09:00:00Z"),
+    editedDate: new Date("2024-01-10T15:30:00Z"),
+    archived: false,
   },
   {
     id: "page-002",
@@ -122,6 +125,9 @@ export const pages: Page[] = [
     data: "BFS, DFS, Dijkstra's, and Floyd-Warshall explained.",
     path: "notebook-001/section-001/page-001/page-002",
     level: 1,
+    creationDate: new Date("2024-01-05T12:00:00Z"),
+    editedDate: new Date("2024-01-12T16:00:00Z"),
+    archived: false,
   },
   {
     id: "page-010",
@@ -131,6 +137,9 @@ export const pages: Page[] = [
     data: "DFS implementation and example use cases.",
     path: "notebook-001/section-001/page-001/page-002/page-010",
     level: 2,
+    creationDate: new Date("2024-01-08T14:30:00Z"),
+    editedDate: new Date("2024-01-15T10:45:00Z"),
+    archived: false,
   },
   {
     id: "page-011",
@@ -140,6 +149,9 @@ export const pages: Page[] = [
     data: "BFS implementation and example use cases.",
     path: "notebook-001/section-001/page-001/page-002/page-011",
     level: 2,
+    creationDate: new Date("2024-01-09T11:20:00Z"),
+    editedDate: new Date("2024-01-16T14:00:00Z"),
+    archived: false,
   },
   {
     id: "page-003",
@@ -149,6 +161,9 @@ export const pages: Page[] = [
     data: "Topics include vectors, matrices, and linear transformations.",
     path: "notebook-001/section-002/page-003",
     level: 0,
+    creationDate: new Date("2024-01-03T08:15:00Z"),
+    editedDate: new Date("2024-01-13T13:45:00Z"),
+    archived: false,
   },
   {
     id: "page-012",
@@ -158,6 +173,9 @@ export const pages: Page[] = [
     data: "Addition, multiplication, inversion, and determinant calculation.",
     path: "notebook-001/section-002/page-003/page-012",
     level: 1,
+    creationDate: new Date("2024-01-07T10:50:00Z"),
+    editedDate: new Date("2024-01-17T09:30:00Z"),
+    archived: false,
   },
 
   // Personal Development Pages
@@ -169,6 +187,9 @@ export const pages: Page[] = [
     data: "Morning routines, exercise schedules, and productivity habits.",
     path: "notebook-002/section-004/page-004",
     level: 0,
+    creationDate: new Date("2024-01-04T07:45:00Z"),
+    editedDate: new Date("2024-01-11T14:20:00Z"),
+    archived: false,
   },
   {
     id: "page-013",
@@ -178,6 +199,9 @@ export const pages: Page[] = [
     data: "Tips for starting your day productively.",
     path: "notebook-002/section-004/page-004/page-013",
     level: 1,
+    creationDate: new Date("2024-01-06T09:10:00Z"),
+    editedDate: new Date("2024-01-14T12:40:00Z"),
+    archived: false,
   },
   {
     id: "page-005",
@@ -187,6 +211,9 @@ export const pages: Page[] = [
     data: "Top recommended reads for self-growth and career advancement.",
     path: "notebook-002/section-005/page-005",
     level: 0,
+    creationDate: new Date("2024-01-02T13:30:00Z"),
+    editedDate: new Date("2024-01-18T11:25:00Z"),
+    archived: false,
   },
   {
     id: "page-014",
@@ -196,6 +223,9 @@ export const pages: Page[] = [
     data: "Essential books for skill building and leadership.",
     path: "notebook-002/section-005/page-005/page-014",
     level: 1,
+    creationDate: new Date("2024-01-10T10:00:00Z"),
+    editedDate: new Date("2024-01-19T09:15:00Z"),
+    archived: false,
   },
 
   // Career Planning Pages
@@ -207,6 +237,9 @@ export const pages: Page[] = [
     data: "Best templates for modern and professional resumes.",
     path: "notebook-003/section-007/page-007",
     level: 0,
+    creationDate: new Date("2024-01-01T09:00:00Z"),
+    editedDate: new Date("2024-01-20T14:50:00Z"),
+    archived: false,
   },
   {
     id: "page-015",
@@ -216,6 +249,9 @@ export const pages: Page[] = [
     data: "How to showcase technical skills effectively.",
     path: "notebook-003/section-007/page-007/page-015",
     level: 1,
+    creationDate: new Date("2024-01-08T11:30:00Z"),
+    editedDate: new Date("2024-01-21T10:25:00Z"),
+    archived: false,
   },
   {
     id: "page-008",
@@ -225,6 +261,9 @@ export const pages: Page[] = [
     data: "Behavioral, technical, and HR interview preparation.",
     path: "notebook-003/section-008/page-008",
     level: 0,
+    creationDate: new Date("2024-01-04T13:40:00Z"),
+    editedDate: new Date("2024-01-22T16:30:00Z"),
+    archived: false,
   },
   {
     id: "page-016",
@@ -234,6 +273,9 @@ export const pages: Page[] = [
     data: "Sample answers for common behavioral interview questions.",
     path: "notebook-003/section-008/page-008/page-016",
     level: 1,
+    creationDate: new Date("2024-01-09T14:20:00Z"),
+    editedDate: new Date("2024-01-23T17:15:00Z"),
+    archived: false,
   },
   {
     id: "page-009",
@@ -243,5 +285,8 @@ export const pages: Page[] = [
     data: "Portfolio projects highlighting your skills and achievements.",
     path: "notebook-003/section-009/page-009",
     level: 0,
+    creationDate: new Date("2024-01-05T15:30:00Z"),
+    editedDate: new Date("2024-01-24T18:00:00Z"),
+    archived: false,
   },
 ];
