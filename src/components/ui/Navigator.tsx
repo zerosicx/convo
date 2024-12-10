@@ -1,5 +1,7 @@
 import { Page } from '@/lib/definitions';
-import { notebooks, pages, sections } from '@/lib/dummyData';
+import { useNotebookStore } from '@/lib/stores/notebook-store';
+import { usePageStore } from '@/lib/stores/page-store';
+import { useSectionStore } from '@/lib/stores/section-store';
 import { cn } from '@/lib/utils';
 import { ChevronDown, ChevronsRight, ChevronUp, Droplets, PlusCircle, Search } from 'lucide-react';
 import { ElementRef, useRef, useState } from 'react';
@@ -22,9 +24,11 @@ export const Navigator = () => {
 const NavBar = () => {
 
     const params = useParams();
+    const { sections } = useSectionStore();
+    const { notebooks } = useNotebookStore();
 
     const getSectionsByNotebook = (notebookId: string) => {
-        return sections.filter((s) => s.notebookId === notebookId);
+        return Object.values(sections).filter((s) => s.notebookId === notebookId);
     }
 
     return (
@@ -40,7 +44,7 @@ const NavBar = () => {
                 <Label className="text-xs text-muted-foreground">NOTEBOOKS</Label>
                 <NavGroup type="multiple" className="w-full">
                     {
-                        notebooks.map((notebook, index) => {
+                        Object.values(notebooks).map((notebook, index) => {
                             return (
                                 <NavGroupItem value={notebook.id} key={index}>
                                     <NavGroupTrigger>
@@ -69,6 +73,7 @@ const NavBar = () => {
                         })
                     }
                 </NavGroup>
+                <Button className="bg-blue-700 border-[1px] w-full">New Notebook <PlusCircle /></Button>
             </div>
         </Sidebar>
     )
@@ -98,8 +103,10 @@ const PageBar = () => {
 
 const PageTree = ({ sectionId }: { sectionId: string }) => {
 
+    const { pages } = usePageStore();
+
     const getTopLevelPagesFromSection = () => {
-        return pages.filter((p) => p.level === 0 && p.sectionId === sectionId);
+        return Object.values(pages).filter((p) => p.level === 0 && p.sectionId === sectionId);
     }
 
     // TODO: use this regex expression when UUID is implemented
@@ -126,6 +133,7 @@ const PageItem = ({ currentPage }: {
     // Get all the pages under the current level
     const params = useParams();
     const sectionId = params.sectionId;
+    const { pages } = usePageStore();
 
     // Use regex to match the notebook id; temporary while UUID4 is not implemented
     const getNotebookId = (path: string) => {
@@ -135,7 +143,7 @@ const PageItem = ({ currentPage }: {
     }
 
     const getChildPages = () => {
-        return pages.filter((p) => p.parentPageId === currentPage.id);
+        return Object.values(pages).filter((p) => p.parentPageId === currentPage.id);
     }
 
     // Level will be a multiplier for nesting
