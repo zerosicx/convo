@@ -77,7 +77,7 @@ export const PageItem = ({ currentPage }: {
                     <div className={cn("text-left p-2 text-primary",
                     )}>
                         <h4 className="truncate max-w-36" style={{
-                            maxWidth: `${144 - currentPage.level * 30}px`
+                            maxWidth: `${144 - currentPage.level * 12}px`
                         }}
                             title={currentPage.title}>{currentPage.title}</h4>
                     </div>

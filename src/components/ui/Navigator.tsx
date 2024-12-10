@@ -37,14 +37,14 @@ const NavBar = () => {
 
     return (
         <Sidebar>
-            <header className="flex flex-row gap-4 items-center p-4 pb-2">
+            <header className="flex flex-row gap-4 items-center p-3 pb-2">
                 <Droplets className="text-blue-500" />
                 <h2 className="text-3xl title-font">Mizu</h2>
             </header>
-            <div className="px-4">
+            <div className="px-3">
                 <Input startIcon={Search} placeholder='Search' className="rounded-sm border-blue-600 border-[1px] h-7" />
             </div>
-            <div className="flex flex-col w-full px-4 items-start">
+            <div className="flex flex-col w-full px-3 items-start">
                 <Label className="text-xs text-muted-foreground">NOTEBOOKS</Label>
                 <NavGroup type="multiple" className="w-full">
                     {
@@ -137,8 +137,8 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
     const sidebarRef = useRef<ElementRef<"div">>(null);
     const isResizingRef = useRef<boolean>(false);
 
-    const MIN_WIDTH = 160; // Minimum width in px
-    const MAX_WIDTH = 250; // Maximum width in px
+    const MIN_WIDTH = 200; // Minimum width in px
+    const MAX_WIDTH = 300; // Maximum width in px
 
     const handleRailClick = () => {
         console.log("Rail clicked");
@@ -148,7 +148,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 
     const HandleTrigger = () => {
         return (
-            <div className="h-screen w-2 bg-zinc-300 flex flex-col items-center z-[99999] hover:bg-zinc-400" onClick={() => { setCollapsed(false) }}>
+            <div className="h-screen w-1 bg-zinc-300 flex flex-col items-center z-[99999] hover:bg-blue-200" onClick={() => { setCollapsed(false) }}>
                 <ChevronsRight className="w-3 h-3 text-white my-4" />
             </div>
         )
@@ -190,13 +190,13 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
     return (
         <div
             ref={sidebarRef}
-            className="relative w-[12vw] min-w-40 h-screen bg-zinc-50 border-r border-zinc-200 flex flex-col gap-4 text-primary"
+            className="relative w-[200px] min-w-40 h-screen bg-zinc-50 border-r border-zinc-200 flex flex-col gap-4 text-primary"
         >
             {children}
 
             {/* Sidebar Rail */}
             <div
-                className="absolute top-0 right-0 w-1 h-full bg-transparent cursor-col-resize"
+                className="absolute top-0 right-0 w-[2px] h-full bg-transparent cursor-col-resize hover:bg-blue-200"
                 onClick={handleRailClick}
                 onMouseDown={handleMouseDown}
             ></div>
