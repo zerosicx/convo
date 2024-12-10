@@ -1,5 +1,7 @@
+import { uuid4 } from "uuid4";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { NotebookId, PageId, SectionId } from "../definitions";
 
 // Define Page Type
 export interface Page {
@@ -20,7 +22,13 @@ export interface Page {
 interface PageStore {
   pages: Record<string, Page>;
   getPageById: (id: string) => Page | undefined;
-  createPage: (sectionId: string, title: string, data?: any) => Page;
+  createPage: (
+    notebookId: NotebookId,
+    sectionId: SectionId,
+    title: string,
+    parentPageId?: PageId,
+    data?: any
+  ) => Page;
   updatePage: (page: Page) => void;
   updatePageById: (id: string, data: Partial<Page>) => void;
   addPage: (page: Page) => void;
@@ -37,20 +45,38 @@ export const usePageStore = create<PageStore>()(
       getPageById: (id: string): Page | undefined =>
         (get() as PageStore).pages[id],
 
-      createPage: (sectionId: string, title: string, data: any = "") => {
+      createPage: (
+        notebookId: string,
+        sectionId: string,
+        title: string,
+        parentPageId?: PageId,
+        data: any = ""
+      ) => {
         const id = "page-" + uuid4();
-        const newPage: Page = {
+
+        let newPage: Page = {
           id,
           sectionId,
           title,
           data,
           parentPageId: null,
-          path: `${sectionId}/${id}`,
+          path: `${notebookId}/${sectionId}/${id}`,
           level: 0,
           creationDate: new Date(),
           editedDate: new Date(),
           archived: false,
         };
+
+        // If there is a parent page, get the parent as well.
+        if (parentPageId) {
+          const parent = get().getPageById(parentPageId);
+          newPage = {
+            ...newPage,
+            parentPageId: parent?.id,
+            level: (parent?.level ?? 0) + 1,
+            path: `${parent?.path}/${id}`,
+          };
+        }
 
         set((state) => ({
           pages: { ...state.pages, [id]: newPage },

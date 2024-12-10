@@ -9,7 +9,8 @@ const inputVariants = cva(
     variants: {
       variant: {
         default: "text-base md:text-sm",
-        title: "placeholder:text-4xl text-4xl border-0 border-b-2 border-blue-300 text-blue animate-pulse focus:animate-none"
+        title: "placeholder:text-4xl text-4xl border-0 border-b-2 border-blue-300 text-blue animate-pulse focus:animate-none",
+        smallUnderline: "text-xs border-b-[1px] border-blue-700"
       }
     },
     defaultVariants: {

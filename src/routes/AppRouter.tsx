@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import React from "react";
 import { Outlet, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
@@ -28,6 +29,7 @@ const AppRouter: React.FC = () => {
                 {/* Catch-All Route for 404 */}
                 <Route path="*" element={<ErrorPage />} />
             </Routes>
+            <Toaster />
         </Router>
     );
 };

@@ -46,9 +46,9 @@ export const useNotebookStore = create<NotebookStore>()(
         name: string,
         user: string,
         description = "",
-        colour = "#FFFFFF"
+        colour = "#1e40af"
       ) => {
-        const id = uuid4();
+        const id = "notebook-" + uuid4();
         const newNotebook: Notebook = {
           id,
           name,

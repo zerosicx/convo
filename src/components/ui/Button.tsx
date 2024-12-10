@@ -20,6 +20,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent/20 bg-transparent focus-visible:outline-none focus:outline-none active:bg-zinc-300 border-0",
         link: "text-primary underline-offset-4 hover:underline",
         mizu: "text-primary bg-blue-300",
+        mizu2: "bg-blue-700 hover:bg-blue-600 active:bg-blue-800 ring-0 outline-none border-0 focus:outline-none"
       },
       size: {
         default: "h-9 px-4 py-2",
