@@ -1,29 +1,68 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import NoteMeta from "@/components/ui/NoteMeta";
+import { usePageStore } from "@/lib/stores/page-store";
+import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
 import { BlockNoteView, lightDefaultTheme } from "@blocknote/mantine";
-import { useCreateBlockNote } from "@blocknote/react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const NotePage = () => {
-
-    const editor = useCreateBlockNote();
-
     const params = useParams();
+    const { getPageById, updatePageById } = usePageStore();
+
+    const page = params.pageId ? getPageById(params.pageId) : null;
+
+    const [initialContent, setInitialContent] = useState<
+        PartialBlock[] | undefined | "loading"
+    >("loading");
+
+    // Loads the previously stored editor contents.
+    useEffect(() => {
+        setInitialContent(page?.data ? JSON.parse(page?.data) : "loading");
+    }, [params.pageId]);
+
+    // Creates a new editor instance.
+    // We use useMemo + createBlockNoteEditor instead of useCreateBlockNote so we
+    // can delay the creation of the editor until the initial content is loaded.
+    const editor = useMemo(() => {
+        if (initialContent === "loading") {
+            return BlockNoteEditor.create({})
+        }
+        return BlockNoteEditor.create({ initialContent });
+    }, [initialContent]);
+
+    // Handle Content Change (extracted)
+    const handleContentChange = useCallback(() => {
+        if (page?.id && editor) {
+            updatePageById(page.id, {
+                data: JSON.stringify(editor.document),
+            });
+        }
+    }, [editor, page?.id, updatePageById]);
+
+    // Handle missing pageId
     if (!params.pageId) {
         return (
             <div className="w-full h-screen items-center justify-center flex flex-col">
-                <h3 className="text-3xl"> No page selected </h3>
+                <h3 className="text-3xl">No page selected</h3>
             </div>
-        )
+        );
     }
 
     return (
         <div>
             <NoteMeta />
             <main className="w-full h-full">
-                <BlockNoteView editor={editor} theme={lightDefaultTheme} />
+                {
+                    editor && <BlockNoteView
+                        editor={editor}
+                        theme={lightDefaultTheme}
+                        onChange={handleContentChange}
+                    />
+                }
             </main>
         </div>
-    )
-}
+    );
+};
 
-export default NotePage
+export default NotePage;

@@ -41,7 +41,7 @@ const NavBar = () => {
                 <h2 className="text-xl font-semibold">Convo</h2>
             </header>
             <div className="px-3">
-                <Input startIcon={Search} placeholder='Search' className="rounded-sm border-blue-600 border-[1px] h-7" />
+                <Input startIcon={Search} placeholder='Search' className="rounded-sm h-7" />
             </div>
             <div className="flex flex-col w-full px-3 items-start">
                 <div className="flex flex-row w-full justify-between items-center">
@@ -67,14 +67,13 @@ const NavBar = () => {
                     }
                 </NavGroup>
                 {
-                    creatingNotebook && <div className="w-full">
+                    creatingNotebook && <div className="w-full px-2">
                         <Input
                             autoFocus
                             ref={notebookInputRef}
                             placeholder={"Untitled Notebook"}
                             variant="smallUnderline"
                             startIcon={BookTextIcon}
-                            style={{ maxWidth: '80%' }}
                             onKeyDown={handleCreateNewNotebook}
                             onBlur={() => setCreatingNotebook(false)}
                         />
@@ -114,14 +113,13 @@ const PageBar = () => {
             <ScrollArea className="w-full">
                 <PageTree sectionId={sectionId} />
                 {
-                    creatingPage && <div className="w-full">
+                    creatingPage && <div className="w-full px-2">
                         <Input
                             autoFocus
                             ref={pageInputRef}
                             placeholder={"Untitled Notebook"}
                             variant="smallUnderline"
                             startIcon={FileIcon}
-                            style={{ maxWidth: '75%' }}
                             onKeyDown={handleCreatePage}
                             onBlur={() => setCreatingPage(false)}
                         />
@@ -146,13 +144,13 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
     const handleRailClick = () => {
         console.log("Rail clicked");
         console.log(sidebarRef?.current?.clientWidth);
-        setCollapsed(true)
+        setCollapsed(!collapsed)
     };
 
     const HandleTrigger = () => {
         return (
-            <div className="h-screen w-1 bg-zinc-300 flex flex-col items-center z-[99999] hover:bg-blue-200" onClick={() => { setCollapsed(false) }}>
-                <ChevronsRight className="w-3 h-3 text-white my-4" />
+            <div className="h-screen w-2 bg-zinc-300 flex flex-col items-center z-[99999] hover:bg-blue-200" onClick={() => { setCollapsed(false) }}>
+                <ChevronsRight className="w-3 h-3 my-4" />
             </div>
         )
     }

@@ -3,27 +3,27 @@ import { cva, VariantProps } from "class-variance-authority";
 import { LucideIcon } from "lucide-react";
 import * as React from "react";
 
+// Define Input Variants
 const inputVariants = cva(
-  "flex-1 bg-transparent px-3 py-1 placeholder:text-muted-foreground focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50",
+  "w-full appearance-none bg-transparent text-base md:text-sm focus:outline-none",
   {
     variants: {
       variant: {
-        default: "text-base md:text-sm",
-        title: "placeholder:text-4xl text-4xl border-0 border-b-2 border-blue-300 text-blue animate-pulse focus:animate-none",
-        smallUnderline: "text-sm border-b-2 border-blue-500"
-      }
+        default: "p-3 rounded-md border border-input shadow-sm transition-colors",
+        title: "text-4xl placeholder:text-4xl border-0 border-b-2 border-blue-300 animate-pulse focus:animate-none p-2",
+        smallUnderline: "text-sm border-b-2 border-blue-500 p-1",
+      },
     },
     defaultVariants: {
-      variant: "default"
-    }
+      variant: "default",
+    },
   }
-)
+);
 
-
+// Define Input Props
 interface InputProps extends React.ComponentProps<"input">, VariantProps<typeof inputVariants> {
-  asChild?: boolean;
-  startIcon?: LucideIcon;  // Optional start icon
-  endIcon?: LucideIcon;    // Optional end icon
+  startIcon?: LucideIcon;  // Optional Start Icon
+  endIcon?: LucideIcon;    // Optional End Icon
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -31,15 +31,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div
         className={cn(
-          "relative flex h-9 w-full items-center",
-          variant === "default" && "rounded-md border border-input bg-transparent shadow-sm transition-colors focus-within:ring-1 focus-within:ring-ring",
+          "relative flex items-center w-full",
+          variant === "default" && "border border-input rounded-md shadow-sm",
           className
         )}
       >
         {/* Start Icon */}
         {StartIcon && (
-          <div className="ml-2 text-muted-foreground">
-            <StartIcon size={16} />
+          <div className="absolute left-3 text-muted-foreground">
+            <StartIcon size={20} />
           </div>
         )}
 
@@ -47,9 +47,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={type}
           className={cn(
-            StartIcon ? "ml-2" : "",
-            EndIcon ? "mr-2" : "",
             inputVariants({ variant }),
+            "w-full",
+            StartIcon && "pl-10",  // Add left padding if StartIcon exists
+            EndIcon && "pr-10",    // Add right padding if EndIcon exists
+            className
           )}
           ref={ref}
           {...props}
@@ -57,8 +59,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         {/* End Icon */}
         {EndIcon && (
-          <div className="mr-2 text-muted-foreground">
-            <EndIcon size={16} />
+          <div className="absolute right-3 text-muted-foreground">
+            <EndIcon size={20} />
           </div>
         )}
       </div>
@@ -69,4 +71,3 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = "Input";
 
 export { Input, inputVariants };
-

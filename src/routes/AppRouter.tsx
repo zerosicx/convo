@@ -1,4 +1,3 @@
-import { Toaster } from "@/components/ui/toaster";
 import React from "react";
 import { Outlet, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
@@ -7,6 +6,7 @@ import ErrorPage from "@/pages/ErrorPage";
 import LandingPage from "@/pages/LandingPage";
 
 // Layout
+import { Toaster } from "@/components/ui/toaster";
 import MainLayout from "@/layouts/MainLayout";
 
 const AppRouter: React.FC = () => {
