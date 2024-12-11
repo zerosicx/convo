@@ -124,7 +124,7 @@ export const SectionTree = ({ notebookId }: { notebookId: NotebookId }) => {
             }
             {
                 creatingSection ? <div className="w-full">
-                    <Input ref={sectionInputRef} placeholder={"Untitled Section"} style={{ maxWidth: '100%' }} onKeyDown={(event) => {
+                    <Input autoFocus ref={sectionInputRef} placeholder={"Untitled Section"} style={{ maxWidth: '100%' }} onKeyDown={(event) => {
                         event.stopPropagation();
                         if (event.key === "Enter") {
                             createNewSection(notebookId, sectionInputRef?.current?.value ?? "Untitled section");
