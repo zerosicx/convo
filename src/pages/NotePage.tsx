@@ -56,6 +56,7 @@ const NotePage = () => {
             <main className="w-full h-full">
                 {
                     editor && <BlockNoteView
+                        className="overflow-hidden"
                         editor={editor}
                         theme={lightDefaultTheme}
                         onChange={handleContentChange}

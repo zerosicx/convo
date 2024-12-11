@@ -51,7 +51,7 @@ const SectionItem = ({ notebookId, section, selected }:
     return (
         <NavLink to={`notebook/${notebookId}/section/${section.id}`}>
             <div className={cn("text-left p-1 text-primary flex flex-row justify-between items-center",
-                selected && "bg-indigo-200"
+                selected && "bg-neutral-200"
             )}
                 style={{ borderLeft: `4px solid ${section.color}` }}>
                 {
