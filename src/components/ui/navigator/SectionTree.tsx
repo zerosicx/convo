@@ -1,11 +1,17 @@
+import { toast } from '@/hooks/use-toast'
 import { NotebookId, Section } from '@/lib/definitions'
+import { usePageStore } from '@/lib/stores/page-store'
 import { useSectionStore } from '@/lib/stores/section-store'
 import { cn } from '@/lib/utils'
-import { Pencil, PlusCircle } from 'lucide-react'
+import { AlertDialogCancel } from '@radix-ui/react-alert-dialog'
+import { Ellipsis, Pencil, PlusCircle, Trash2 } from 'lucide-react'
 import { ElementRef, useRef, useState } from 'react'
 import { NavLink, useParams } from 'react-router-dom'
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../alert-dialog'
 import { Button } from '../Button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../dropdown-menu'
 import { Input } from '../Input'
+import { Label } from '../Label'
 
 
 const SectionItem = ({ notebookId, section, selected }:
@@ -15,15 +21,80 @@ const SectionItem = ({ notebookId, section, selected }:
         selected: boolean
     }
 ) => {
+    const { updateSectionById, removeSection } = useSectionStore();
+    const { removeBySection } = usePageStore();
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [editing, setEditing] = useState<boolean>(false);
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === "Enter") {
+            setEditing(false);
+            toast({
+                variant: "success",
+                description: "Successfully updated section name."
+            })
+        }
+    }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        // Update the section name
+        updateSectionById(section.id, {
+            name: e.target.value
+        });
+    }
+
+    const handleDeleteClick = () => {
+        removeSection(section.id);
+        // Delete all related pages
+        removeBySection(section.id)
+    }
+
     return (
         <NavLink to={`notebook/${notebookId}/section/${section.id}`}>
             <div className={cn("text-left p-1 text-primary flex flex-row justify-between items-center",
                 selected && "bg-blue-200"
             )}
                 style={{ borderLeft: `2px solid ${section.color}` }}>
-                {section.name}
-                <Button size="icon" variant="ghost">
-                    <Pencil className="w-4 h-4 text-muted-foreground" /></Button>
+                {
+                    !editing && <span>{section.name}</span>
+                }
+                {
+                    editing && <Input autoFocus ref={inputRef} variant="transparent" placeholder={section.name} onKeyDown={handleKeyDown} onChange={handleChange} onBlur={() => setEditing(false)} />
+                }
+                <DropdownMenu>
+                    <DropdownMenuTrigger className="bg-transparent w-fit h-fit p-1 outline-none focus:outline-none border-0 focus-visible:outline-none">
+                        <Button variant="ghost" size="icon">
+                            <Ellipsis className="w-4 h-4 text-muted-foreground" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="px-2">
+                        <Label className="text-muted-foreground">Edit Menu</Label>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => setEditing(true)}>
+                            <Pencil className="w-4 h-4 text-muted-foreground" /> <span className="text-neutral-800">Rename</span>
+                        </DropdownMenuItem>
+                        <AlertDialog>
+                            <AlertDialogTrigger className="bg-transparent rounded-sm text-sm flex flex-row items-center  w-full py-1.5 px-2 gap-2 font-normal outline-none border-0 focus:outline-none focus-visible:outline-none focus:bg-accent focus:text-accent-foreground hover:bg-accent hover:text-accent-foreground">
+                                <Trash2 className="w-4 h-4 text-muted-foreground" /> <span className="text-neutral-800">Delete</span>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        Are you absolutely sure?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Deleting {section.name} is irreversible. This will permanently remove this section and all related pages.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={handleDeleteClick}>Continue</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
         </NavLink>
     )

@@ -11,7 +11,7 @@ const inputVariants = cva(
       variant: {
         default: "p-3 rounded-md border border-input shadow-sm transition-colors",
         title: "text-4xl placeholder:text-4xl border-0 border-b-2 border-blue-300 animate-pulse focus:animate-none p-2",
-        smallUnderline: "text-sm border-b-2 border-blue-500 p-1",
+        transparent: "border-0",
       },
     },
     defaultVariants: {
@@ -71,3 +71,4 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = "Input";
 
 export { Input, inputVariants };
+

@@ -23,7 +23,7 @@ const LandingPage = () => {
                         <Button size="lg" variant="secondary">Learn more</Button>
                     </div>
                 </div>
-                <img src="conversation.webp" height={400} width={400} className="rounded-md drop-shadow-md" />
+                <img src="/conversation.webp" height={400} width={400} className="rounded-md drop-shadow-md" />
             </div>
         </div>
     )

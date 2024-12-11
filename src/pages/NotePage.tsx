@@ -45,7 +45,7 @@ const NotePage = () => {
         return (
             <div className="w-full h-screen items-center justify-center flex flex-col gap-10">
                 <h3 className="text-2xl font-italic">Why not write a new note?</h3>
-                <img src='writing.webp' width={350} height={350} className="rounded-md drop-shadow-md" />
+                <img src='/writing.webp' width={350} height={350} className="rounded-md drop-shadow-md" />
             </div>
         );
     }

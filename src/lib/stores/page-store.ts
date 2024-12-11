@@ -33,6 +33,7 @@ interface PageStore {
   updatePageById: (id: string, data: Partial<Page>) => void;
   addPage: (page: Page) => void;
   removePage: (id: string) => void;
+  removeBySection: (sectionId: SectionId) => void;
   clearPages: () => void;
 }
 
@@ -116,6 +117,16 @@ export const usePageStore = create<PageStore>()(
         set((state: PageStore) => {
           const updatedPages = { ...state.pages };
           delete updatedPages[id];
+          return { pages: updatedPages };
+        }),
+
+      removeBySection: (sectionId: SectionId) =>
+        set((state: PageStore) => {
+          const updatedPages = Object.fromEntries(
+            Object.entries(state.pages).filter(
+              ([_, page]) => page.sectionId !== sectionId
+            )
+          );
           return { pages: updatedPages };
         }),
 
