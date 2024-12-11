@@ -69,7 +69,7 @@ const NavBar = () => {
                     }
                 </NavGroup>
                 {
-                    creatingNotebook && <div className="w-full px-2">
+                    creatingNotebook && <div className="w-full">
                         <Input
                             autoFocus
                             ref={notebookInputRef}
@@ -124,6 +124,7 @@ const PageBar = () => {
                 {
                     creatingPage && <div className="w-full px-2">
                         <Input
+                            className="w-full"
                             autoFocus
                             ref={pageInputRef}
                             placeholder={"Untitled Page"}

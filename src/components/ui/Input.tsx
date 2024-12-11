@@ -9,7 +9,7 @@ const inputVariants = cva(
   {
     variants: {
       variant: {
-        default: "p-3 rounded-md border border-input shadow-sm transition-colors",
+        default: "p-2 rounded-md border border-input shadow-sm transition-colors",
         title: "border-0 border-b-4 border-blue-300 animate-pulse focus:animate-none pb-2 !placeholder:text-4xl !text-4xl",
         transparent: "border-0",
       },
@@ -31,7 +31,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div
         className={cn(
-          "relative flex items-center w-full",
+          "relative flex items-center w-full p-0",
           variant === "default" && "border border-input rounded-md shadow-sm",
           className
         )}
