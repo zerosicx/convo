@@ -54,7 +54,7 @@ const NoteMeta = () => {
         }
     }
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = () => {
         updatePageById(currentPage?.id as string, {
             title: inputRef?.current?.value ?? currentPage?.title
         })

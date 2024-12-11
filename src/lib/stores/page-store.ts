@@ -1,4 +1,4 @@
-import { uuid4 } from "uuid4";
+import uuid4 from "uuid4";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { NotebookId, PageId, SectionId } from "../definitions";

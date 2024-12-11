@@ -51,15 +51,6 @@ export const PageItem = ({ currentPage }: {
         return Object.values(pages).filter((p) => p.parentPageId === currentPage.id);
     }
 
-    const handleCreatePage = (event: React.KeyboardEvent) => {
-        // Do something
-        event.stopPropagation();
-        if (event.key === "Enter") {
-            createPage(params.notebookId ?? "", params.sectionId ?? "", pageInputRef?.current?.value ?? "");
-            setCreatingPage(false);
-        }
-    }
-
     const handleCreateNestedPage = (event: React.KeyboardEvent) => {
         // Do something
         event.stopPropagation();

@@ -6,7 +6,7 @@ import ErrorPage from "@/pages/ErrorPage";
 import LandingPage from "@/pages/LandingPage";
 
 // Layout
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/Toaster";
 import MainLayout from "@/layouts/MainLayout";
 
 const AppRouter: React.FC = () => {
