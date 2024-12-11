@@ -102,7 +102,8 @@ const PageBar = () => {
         // Do something
         event.stopPropagation();
         if (event.key === "Enter") {
-            createPage(params?.notebookId ?? "", sectionId, pageInputRef?.current?.value ?? "");
+            console.log(pageInputRef?.current?.value);
+            createPage(params?.notebookId ?? "", sectionId, pageInputRef?.current?.value || "Untitled Page");
             setCreatingPage(false);
         }
     }

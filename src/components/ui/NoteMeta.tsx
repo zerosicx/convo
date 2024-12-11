@@ -81,7 +81,9 @@ const NoteMeta = () => {
                     !editing && <h1 className="text-4xl" onClick={handleTitleClick}>{currentPage?.title}</h1>
                 }
                 {
-                    editing && <Input autoFocus value={currentPage?.title} ref={inputRef} placeholder={currentPage?.title} onKeyDown={handleKeydownEnter} variant="title" onBlur={() => setEditing(false)} onChange={handleChange} />
+                    editing && <Input autoFocus value={currentPage?.title} ref={inputRef} placeholder={currentPage?.title} onKeyDown={handleKeydownEnter} variant="title" onBlur={() => setEditing(false)} onChange={handleChange} style={{
+                        // fontSize: '2.2rem'
+                    }} />
                 }
             </main>
         </div>

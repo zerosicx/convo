@@ -55,7 +55,7 @@ export const PageItem = ({ currentPage }: {
         // Do something
         event.stopPropagation();
         if (event.key === "Enter") {
-            createPage(params.notebookId ?? "", params.sectionId ?? "", pageInputRef?.current?.value ?? "", currentPage.id);
+            createPage(params.notebookId ?? "", params.sectionId ?? "", pageInputRef?.current?.value ?? "Untitled Page", currentPage.id);
             setCreatingPage(false);
         }
     }

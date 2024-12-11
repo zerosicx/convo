@@ -29,7 +29,7 @@ const NotePage = () => {
             return BlockNoteEditor.create({})
         }
         return BlockNoteEditor.create({ initialContent });
-    }, [initialContent]);
+    }, [initialContent, params.pageId]);
 
     // Handle Content Change (extracted)
     const handleContentChange = useCallback(() => {

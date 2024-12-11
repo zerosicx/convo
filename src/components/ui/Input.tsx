@@ -10,7 +10,7 @@ const inputVariants = cva(
     variants: {
       variant: {
         default: "p-3 rounded-md border border-input shadow-sm transition-colors",
-        title: "text-4xl placeholder:text-4xl border-0 border-b-2 border-blue-300 animate-pulse focus:animate-none p-2",
+        title: "border-0 border-b-4 border-blue-300 animate-pulse focus:animate-none pb-2 !placeholder:text-4xl !text-4xl",
         transparent: "border-0",
       },
     },
