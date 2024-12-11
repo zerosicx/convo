@@ -3,11 +3,10 @@ import { NotebookId, Section } from '@/lib/definitions'
 import { usePageStore } from '@/lib/stores/page-store'
 import { useSectionStore } from '@/lib/stores/section-store'
 import { cn } from '@/lib/utils'
-import { AlertDialogCancel } from '@radix-ui/react-alert-dialog'
-import { Ellipsis, Pencil, PlusCircle, Trash2 } from 'lucide-react'
+import { Ellipsis, Pencil, Plus, Trash2 } from 'lucide-react'
 import { ElementRef, useRef, useState } from 'react'
 import { NavLink, useParams } from 'react-router-dom'
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../alert-dialog'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../alert-dialog'
 import { Button } from '../Button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../dropdown-menu'
 import { Input } from '../Input'
@@ -52,9 +51,9 @@ const SectionItem = ({ notebookId, section, selected }:
     return (
         <NavLink to={`notebook/${notebookId}/section/${section.id}`}>
             <div className={cn("text-left p-1 text-primary flex flex-row justify-between items-center",
-                selected && "bg-blue-200"
+                selected && "bg-indigo-200"
             )}
-                style={{ borderLeft: `2px solid ${section.color}` }}>
+                style={{ borderLeft: `4px solid ${section.color}` }}>
                 {
                     !editing && <span>{section.name}</span>
                 }
@@ -83,7 +82,7 @@ const SectionItem = ({ notebookId, section, selected }:
                                         Are you absolutely sure?
                                     </AlertDialogTitle>
                                     <AlertDialogDescription>
-                                        Deleting {section.name} is irreversible. This will permanently remove this section and all related pages.
+                                        Deleting section "{section.name}" is irreversible. This will permanently remove this section and all related pages.
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
@@ -92,7 +91,6 @@ const SectionItem = ({ notebookId, section, selected }:
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                         </AlertDialog>
-
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
@@ -135,7 +133,7 @@ export const SectionTree = ({ notebookId }: { notebookId: NotebookId }) => {
                     }}
                         onBlur={() => setCreatingSection(false)}
                     />
-                </div> : <Button variant="ghost" className="w-full px-2 text-xs h-6 text-muted-foreground" onClick={() => setCreatingSection(true)}><PlusCircle /> Section</Button>
+                </div> : <Button variant="ghost" className="w-full px-2 text-xs h-6 text-muted-foreground" onClick={() => setCreatingSection(true)}><Plus /> Section</Button>
             }
         </>
     )
