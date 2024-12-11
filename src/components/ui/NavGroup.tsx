@@ -26,7 +26,7 @@ const NavGroupTrigger = React.forwardRef<
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(
-        "flex flex-1 items-center h-8 gap-2 p-1 text-sm font-medium transition-all hover:bg-zinc-200 text-left [&[data-state=open]>svg]:rotate-90 ring-0 outline-none focus:outline-none focus-visible:outline-none border-0 bg-transparent [&[data-state=open]]:bg-zinc-300 rounded-sm",
+        "flex flex-1 items-center h-8 gap-2 p-1 text-sm font-medium transition-all hover:bg-neutral-100 text-left [&[data-state=open]>svg]:rotate-90 ring-0 outline-none focus:outline-none focus-visible:outline-none border-0 bg-transparent [&[data-state=open]]:bg-neutral-200 rounded-sm",
         className
       )}
       {...props}

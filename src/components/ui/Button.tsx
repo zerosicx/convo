@@ -17,10 +17,8 @@ const buttonVariants = cva(
           "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:bg-accent/20 bg-transparent focus-visible:outline-none focus:outline-none hover:bg-zinc-200 active:bg-zinc-300 border-0",
+        ghost: "hover:bg-accent/20 bg-transparent focus-visible:outline-none focus:outline-none hover:bg-neutral-200 active:bg-neutral-300 border-0",
         link: "text-primary underline-offset-4 hover:underline",
-        mizu: "text-primary bg-blue-300",
-        mizu2: "bg-blue-700 hover:bg-blue-600 active:bg-blue-800 ring-0 outline-none border-0 focus:outline-none"
       },
       size: {
         default: "h-9 px-4 py-2",

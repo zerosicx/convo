@@ -1,6 +1,7 @@
 import { useNotebookStore } from '@/lib/stores/notebook-store';
 import { usePageStore } from '@/lib/stores/page-store';
-import { BookTextIcon, ChevronsRight, FileIcon, Plus, PlusCircle, Search } from 'lucide-react';
+import { useSectionStore } from '@/lib/stores/section-store';
+import { BookTextIcon, ChevronsRight, FileIcon, Plus, Search } from 'lucide-react';
 import { ElementRef, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button } from './Button';
@@ -36,9 +37,9 @@ const NavBar = () => {
     }
 
     return (
-        <Sidebar>
-            <header className="flex flex-row gap-4 items-center p-3 pb-2">
-                <h2 className="text-xl font-semibold">Convo</h2>
+        <Sidebar minWidth={250}>
+            <header className="flex flex-row gap-4 items-center p-4 pb-0">
+                <h2 className="text-lg font-bold">Convo</h2>
             </header>
             <div className="px-3">
                 <Input startIcon={Search} placeholder='Search' className="rounded-sm h-7" />
@@ -72,7 +73,6 @@ const NavBar = () => {
                             autoFocus
                             ref={notebookInputRef}
                             placeholder={"Untitled Notebook"}
-                            variant="smallUnderline"
                             startIcon={BookTextIcon}
                             onKeyDown={handleCreateNewNotebook}
                             onBlur={() => setCreatingNotebook(false)}
@@ -90,6 +90,7 @@ const PageBar = () => {
     const [creatingPage, setCreatingPage] = useState(false);
     const pageInputRef = useRef<ElementRef<"input">>(null);
     const { createPage } = usePageStore();
+    const { getSectionById } = useSectionStore();
 
     if (!params || !params.sectionId) return;
 
@@ -107,8 +108,15 @@ const PageBar = () => {
 
     return (
         <Sidebar>
-            <div className="p-4 pb-0 flex flex-row justify-between">
-                <Button onClick={() => setCreatingPage(true)}>Add Note <PlusCircle /></Button>
+            <div className="p-4 pb-0 flex flex-row justify-between items-center">
+                <Label className="text-muted-foreground text-sm">
+                    {
+                        getSectionById(sectionId)?.name.toLocaleUpperCase()
+                    }
+                    <span> pages </span>
+                </Label>
+                <Button size="icon" variant="ghost" onClick={() => setCreatingPage(true)}><Plus className="text-muted-foreground" /></Button>
+
             </div>
             <ScrollArea className="w-full">
                 <PageTree sectionId={sectionId} />
@@ -117,8 +125,7 @@ const PageBar = () => {
                         <Input
                             autoFocus
                             ref={pageInputRef}
-                            placeholder={"Untitled Notebook"}
-                            variant="smallUnderline"
+                            placeholder={"Untitled Page"}
                             startIcon={FileIcon}
                             onKeyDown={handleCreatePage}
                             onBlur={() => setCreatingPage(false)}
@@ -132,14 +139,18 @@ const PageBar = () => {
     )
 }
 
-const Sidebar = ({ children }: { children: React.ReactNode }) => {
+const Sidebar = ({ children, minWidth = 200, maxWidth = 300 }: {
+    children: React.ReactNode,
+    minWidth?: number,
+    maxWidth?: number
+}) => {
 
     const [collapsed, setCollapsed] = useState(false);
     const sidebarRef = useRef<ElementRef<"div">>(null);
     const isResizingRef = useRef<boolean>(false);
 
-    const MIN_WIDTH = 200; // Minimum width in px
-    const MAX_WIDTH = 300; // Maximum width in px
+    const MIN_WIDTH = minWidth; // Minimum width in px
+    const MAX_WIDTH = maxWidth; // Maximum width in px
 
     const handleRailClick = () => {
         console.log("Rail clicked");
@@ -149,7 +160,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 
     const HandleTrigger = () => {
         return (
-            <div className="h-screen w-2 bg-zinc-300 flex flex-col items-center z-[99999] hover:bg-blue-200" onClick={() => { setCollapsed(false) }}>
+            <div className="h-screen w-2 bg-neutral-200 flex flex-col items-center z-[99999] hover:bg-blue-200" onClick={() => { setCollapsed(false) }}>
                 <ChevronsRight className="w-3 h-3 my-4" />
             </div>
         )
@@ -191,7 +202,10 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
     return (
         <div
             ref={sidebarRef}
-            className="relative w-[200px] min-w-40 h-screen bg-zinc-50 border-r border-zinc-200 flex flex-col gap-4 text-primary"
+            className="relative min-w-40 h-screen bg-white border-r border-neutral-50 flex flex-col gap-4 text-primary drop-shadow-md"
+            style={{
+                width: minWidth
+            }}
         >
             {children}
 

@@ -72,7 +72,7 @@ export const PageItem = ({ currentPage }: {
     // Level will be a multiplier for nesting
     return (
         <div style={{ marginLeft: `${4 * currentPage.level}px` }}>
-            <div className={cn("flex flex-row justify-between w-full items-center text-sm relative", params.pageId === currentPage.id && "bg-blue-200")}>
+            <div className={cn("flex flex-row justify-between w-full items-center text-sm relative", params.pageId === currentPage.id && "bg-neutral-200/80")}>
                 <NavLink to={`notebook/${getNotebookId(currentPage.path)}/section/${sectionId}/page/${currentPage.id}`} >
                     <div className={cn("text-left p-2 text-primary",
                     )}>
@@ -108,10 +108,8 @@ export const PageItem = ({ currentPage }: {
                     <Input
                         autoFocus
                         ref={pageInputRef}
-                        placeholder={"Untitled Notebook"}
-                        variant="smallUnderline"
+                        placeholder={"Untitled Page"}
                         startIcon={FileIcon}
-                        style={{ maxWidth: '80%' }}
                         onKeyDown={handleCreateNestedPage}
                         onBlur={() => setCreatingPage(false)}
                     />
