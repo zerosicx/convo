@@ -117,9 +117,8 @@ const PageBar = () => {
                     <span> pages </span>
                 </Label>
                 <Button size="icon" variant="ghost" onClick={() => setCreatingPage(true)}><Plus className="text-muted-foreground" /></Button>
-
             </div>
-            <ScrollArea className="w-full">
+            <ScrollArea className="w-full h-full">
                 <PageTree sectionId={sectionId} />
                 {
                     creatingPage && <div className="w-full px-2">
@@ -134,7 +133,7 @@ const PageBar = () => {
                     </div>
                 }
                 <div className="h-5" ></div>
-                <ScrollBar orientation="horizontal" />
+                <ScrollBar orientation='horizontal' />
             </ScrollArea>
         </Sidebar>
     )
