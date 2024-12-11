@@ -3,7 +3,7 @@ import { useNotebookStore } from "@/lib/stores/notebook-store";
 import { usePageStore } from "@/lib/stores/page-store";
 import { useSectionStore } from "@/lib/stores/section-store";
 import { useRef, useState } from "react";
-import { redirect, useParams } from "react-router-dom";
+import { NavLink, redirect, useParams } from "react-router-dom";
 import { Input } from "./Input";
 
 const NoteMeta = () => {
@@ -30,9 +30,9 @@ const NoteMeta = () => {
         if (pathComponents && pathComponents.length >= 3) {
             sectionName = getSectionById(pathComponents[1])?.name;
             notebookName = getNotebookById(pathComponents[0])?.name;
-            pagePath = pathComponents.slice(1).map((pId) => {
-                return getPageById(pId)?.title ?? ""
-            }).join(" / ");
+            pagePath = pathComponents.slice(2).map((pId) => {
+                return getPageById(pId)
+            });
 
         }
 
@@ -65,7 +65,14 @@ const NoteMeta = () => {
             <section>
                 <p className="text-sm text-muted-foreground">
                     {
-                        `${notebookName} / ${sectionName} ${pagePath}`
+                        `${notebookName} / ${sectionName} `
+                    }
+                    {
+                        pagePath?.map((page) => {
+                            return <NavLink to={`notebook/${params?.notebookId}/section/${params?.sectionId}/page/${page?.id}`}>
+                                <span className="text-muted-foreground hover:text-indigo-500 hover:font-medium">/ {page?.title} </span>
+                            </NavLink>
+                        })
                     }
                 </p>
             </section>

@@ -3,7 +3,7 @@ import { usePageStore } from '@/lib/stores/page-store';
 import { useSectionStore } from '@/lib/stores/section-store';
 import { BookTextIcon, ChevronsRight, FileIcon, Plus, Search } from 'lucide-react';
 import { ElementRef, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from './Button';
 import { Input } from './Input';
 import { Label } from './Label';
@@ -26,6 +26,7 @@ const NavBar = () => {
     const { notebooks, createNotebook } = useNotebookStore();
     const [creatingNotebook, setCreatingNotebook] = useState<boolean>(false);
     const notebookInputRef = useRef<ElementRef<"input">>(null);
+    const nav = useNavigate();
 
     const handleCreateNewNotebook = (event: React.KeyboardEvent) => {
         event.stopPropagation();
@@ -39,7 +40,7 @@ const NavBar = () => {
     return (
         <Sidebar minWidth={250}>
             <header className="flex flex-row gap-4 items-center p-4 pb-0">
-                <h2 className="text-lg font-bold">Convo</h2>
+                <h2 className="text-lg font-bold cursor-pointer" onClick={() => nav('/')} title="Return to landing page">Convo</h2>
             </header>
             <div className="px-3">
                 <Input startIcon={Search} placeholder='Search' className="rounded-sm h-7" />
