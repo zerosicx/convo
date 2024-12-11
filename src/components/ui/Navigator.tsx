@@ -1,6 +1,6 @@
 import { useNotebookStore } from '@/lib/stores/notebook-store';
 import { usePageStore } from '@/lib/stores/page-store';
-import { BookTextIcon, ChevronsRight, Droplets, FileIcon, PlusCircle, Search } from 'lucide-react';
+import { BookTextIcon, ChevronsRight, FileIcon, Plus, PlusCircle, Search } from 'lucide-react';
 import { ElementRef, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button } from './Button';
@@ -38,14 +38,16 @@ const NavBar = () => {
     return (
         <Sidebar>
             <header className="flex flex-row gap-4 items-center p-3 pb-2">
-                <Droplets className="text-blue-500" />
-                <h2 className="text-3xl title-font">Mizu</h2>
+                <h2 className="text-xl font-semibold">Convo</h2>
             </header>
             <div className="px-3">
                 <Input startIcon={Search} placeholder='Search' className="rounded-sm border-blue-600 border-[1px] h-7" />
             </div>
             <div className="flex flex-col w-full px-3 items-start">
-                <Label className="text-xs text-muted-foreground">NOTEBOOKS</Label>
+                <div className="flex flex-row w-full justify-between items-center">
+                    <Label className="text-xs text-muted-foreground">NOTEBOOKS</Label>
+                    <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setCreatingNotebook(true)}><Plus /></Button>
+                </div>
                 <NavGroup type="multiple" className="w-full">
                     {
                         Object.values(notebooks).map((notebook, index) => {
@@ -65,7 +67,7 @@ const NavBar = () => {
                     }
                 </NavGroup>
                 {
-                    creatingNotebook ? <div className="w-full">
+                    creatingNotebook && <div className="w-full">
                         <Input
                             autoFocus
                             ref={notebookInputRef}
@@ -76,7 +78,7 @@ const NavBar = () => {
                             onKeyDown={handleCreateNewNotebook}
                             onBlur={() => setCreatingNotebook(false)}
                         />
-                    </div> : <Button variant="ghost" className="w-full px-2 text-xs h-6 text-muted-foreground" onClick={() => setCreatingNotebook(true)}><PlusCircle /> Notebook</Button>
+                    </div>
                 }
             </div>
         </Sidebar>
@@ -111,22 +113,23 @@ const PageBar = () => {
             </div>
             <ScrollArea className="w-full">
                 <PageTree sectionId={sectionId} />
+                {
+                    creatingPage && <div className="w-full">
+                        <Input
+                            autoFocus
+                            ref={pageInputRef}
+                            placeholder={"Untitled Notebook"}
+                            variant="smallUnderline"
+                            startIcon={FileIcon}
+                            style={{ maxWidth: '75%' }}
+                            onKeyDown={handleCreatePage}
+                            onBlur={() => setCreatingPage(false)}
+                        />
+                    </div>
+                }
+                <div className="h-5" ></div>
                 <ScrollBar orientation="horizontal" />
             </ScrollArea>
-            {
-                creatingPage && <div className="w-full">
-                    <Input
-                        autoFocus
-                        ref={pageInputRef}
-                        placeholder={"Untitled Notebook"}
-                        variant="smallUnderline"
-                        startIcon={FileIcon}
-                        style={{ maxWidth: '75%' }}
-                        onKeyDown={handleCreatePage}
-                        onBlur={() => setCreatingPage(false)}
-                    />
-                </div>
-            }
         </Sidebar>
     )
 }
