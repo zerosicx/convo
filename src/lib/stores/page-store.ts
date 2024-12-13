@@ -21,6 +21,8 @@ export interface Page {
 // Define Zustand State
 interface PageStore {
   pages: Record<string, Page>;
+  orderedPages: PageId[]; // Now stores only pageIds
+  getPageList: () => Page[];
   getPageById: (id: string) => Page | undefined;
   createPage: (
     notebookId: NotebookId,
@@ -29,12 +31,12 @@ interface PageStore {
     parentPageId?: PageId,
     data?: any
   ) => Page;
-  updatePage: (page: Page) => void;
   updatePageById: (id: string, data: Partial<Page>) => void;
   addPage: (page: Page) => void;
   removePage: (id: string) => void;
   removeBySection: (sectionId: SectionId) => void;
   clearPages: () => void;
+  repositionPage: (pageId: PageId, index: number) => void; // New function to reposition page
 }
 
 // Create Zustand Store with Explicit Types
@@ -42,9 +44,15 @@ export const usePageStore = create<PageStore>()(
   persist(
     (set, get) => ({
       pages: {},
+      orderedPages: [],
 
-      getPageById: (id: string): Page | undefined =>
-        (get() as PageStore).pages[id],
+      // Returns the list of pages based on the order of their pageIds
+      getPageList: () => {
+        const { orderedPages, pages } = get();
+        return orderedPages.map((pageId) => pages[pageId]);
+      },
+
+      getPageById: (id: string): Page | undefined => get().pages[id],
 
       createPage: (
         notebookId: string,
@@ -79,17 +87,17 @@ export const usePageStore = create<PageStore>()(
           };
         }
 
-        set((state) => ({
-          pages: { ...state.pages, [id]: newPage },
-        }));
+        // Add new page to pages and orderedPages (by pageId)
+        set((state) => {
+          const newOrderedPages = [...state.orderedPages, id];
+          return {
+            pages: { ...state.pages, [id]: newPage },
+            orderedPages: newOrderedPages,
+          };
+        });
 
         return newPage;
       },
-
-      updatePage: (page: Page) =>
-        set((state: PageStore) => ({
-          pages: { ...state.pages, [page.id]: page },
-        })),
 
       updatePageById: (id: string, data: Partial<Page>) =>
         set((state: PageStore) => {
@@ -109,15 +117,22 @@ export const usePageStore = create<PageStore>()(
         }),
 
       addPage: (page: Page) =>
-        set((state: PageStore) => ({
-          pages: { ...state.pages, [page.id]: page },
-        })),
+        set((state: PageStore) => {
+          const newOrderedPages = [...state.orderedPages, page.id];
+          return {
+            pages: { ...state.pages, [page.id]: page },
+            orderedPages: newOrderedPages,
+          };
+        }),
 
       removePage: (id: string) =>
         set((state: PageStore) => {
           const updatedPages = { ...state.pages };
           delete updatedPages[id];
-          return { pages: updatedPages };
+          const updatedOrderedPages = state.orderedPages.filter(
+            (pageId) => pageId !== id
+          );
+          return { pages: updatedPages, orderedPages: updatedOrderedPages };
         }),
 
       removeBySection: (sectionId: SectionId) =>
@@ -127,10 +142,26 @@ export const usePageStore = create<PageStore>()(
               ([_, page]) => page.sectionId !== sectionId
             )
           );
-          return { pages: updatedPages };
+          const updatedOrderedPages = state.orderedPages.filter(
+            (pageId) => updatedPages[pageId]
+          );
+          return { pages: updatedPages, orderedPages: updatedOrderedPages };
         }),
 
-      clearPages: () => set({ pages: {} }),
+      clearPages: () => set({ pages: {}, orderedPages: [] }),
+
+      // Reposition a page by moving it to a new index
+      repositionPage: (pageId: PageId, index: number) => {
+        set((state) => {
+          const orderedPages = [...state.orderedPages];
+          // Remove the page from its current position
+          orderedPages.splice(orderedPages.indexOf(pageId), 1);
+          // Insert the page at the new index
+          orderedPages.splice(index, 0, pageId);
+
+          return { orderedPages };
+        });
+      },
     }),
     {
       name: "page-storage",

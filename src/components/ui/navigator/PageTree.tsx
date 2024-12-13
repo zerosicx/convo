@@ -35,7 +35,8 @@ export const PageItem = ({ currentPage }: {
     // Get all the pages under the current level
     const params = useParams();
     const sectionId = params.sectionId;
-    const { pages } = usePageStore();
+    const { getPageList } = usePageStore();
+    const pages = getPageList();
     const [creatingPage, setCreatingPage] = useState(false);
     const pageInputRef = useRef<ElementRef<"input">>(null);
     const { createPage } = usePageStore();
