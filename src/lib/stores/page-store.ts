@@ -31,6 +31,7 @@ interface PageStore {
     parentPageId?: PageId,
     data?: any
   ) => Page;
+  updatePageList: (newOrder: PageId[]) => void;
   updatePageById: (id: string, data: Partial<Page>) => void;
   addPage: (page: Page) => void;
   removePage: (id: string) => void;
@@ -98,6 +99,9 @@ export const usePageStore = create<PageStore>()(
 
         return newPage;
       },
+
+      updatePageList: (newOrder: PageId[]) =>
+        set(() => ({ orderedPages: newOrder })),
 
       updatePageById: (id: string, data: Partial<Page>) =>
         set((state: PageStore) => {

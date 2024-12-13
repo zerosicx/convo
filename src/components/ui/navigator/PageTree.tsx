@@ -1,31 +1,41 @@
 import { Page } from "@/lib/definitions";
 import { usePageStore } from "@/lib/stores/page-store";
 import { cn } from "@/lib/utils";
-import { ChevronDown, ChevronUp, FileIcon } from "lucide-react";
+import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS } from '@dnd-kit/utilities';
+import { ChevronDown, ChevronUp, FileIcon, GripVertical } from "lucide-react";
 import { ElementRef, useRef, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { Button } from "../Button";
 import { Input } from "../Input";
 
+
 export const PageTree = ({ sectionId }: { sectionId: string }) => {
+    const { pages, orderedPages } = usePageStore();
 
-    const { pages } = usePageStore();
-
+    // Modify this function to use orderedPages and retrieve the actual page objects
     const getTopLevelPagesFromSection = () => {
-        return Object.values(pages).filter((p) => p.level === 0 && p.sectionId === sectionId);
+        return orderedPages
+            .map(pageId => pages[pageId]) // Map the orderedPage IDs to the corresponding Page objects
+            .filter(page => page && page.level === 0 && page.sectionId === sectionId); // Filter based on the sectionId and level
     }
 
     return (
         <div>
-            {
-                getTopLevelPagesFromSection().map((page, index) => {
-                    return (
-                        <PageItem currentPage={page} key={index} />
-                    )
-                })
-            }
+            <SortableContext
+                items={orderedPages}
+                strategy={verticalListSortingStrategy}
+            >
+                {
+                    getTopLevelPagesFromSection().map((page, index) => {
+                        return (
+                            <PageItem currentPage={page} key={index} />
+                        )
+                    })
+                }
+            </SortableContext>
         </div>
-    )
+    );
 }
 
 export const PageItem = ({ currentPage }: {
@@ -61,19 +71,36 @@ export const PageItem = ({ currentPage }: {
         }
     }
 
+    // Sortable config
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+    } = useSortable({ id: currentPage.id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+
     // Level will be a multiplier for nesting
     return (
-        <div style={{ marginLeft: `${4 * currentPage.level}px` }}>
+        <div style={{ marginLeft: `${4 * currentPage.level}px`, ...style }} ref={setNodeRef} {...attributes} >
             <div className={cn("flex flex-row justify-between w-full items-center text-sm relative", params.pageId === currentPage.id && "bg-neutral-200/80")}>
-                <NavLink to={`notebook/${getNotebookId(currentPage.path)}/section/${sectionId}/page/${currentPage.id}`} >
-                    <div className={cn("text-left p-2 text-primary",
-                    )}>
-                        <h4 className="truncate max-w-36" style={{
-                            maxWidth: `${144 - currentPage.level * 12}px`
-                        }}
-                            title={currentPage.title}>{currentPage.title}</h4>
-                    </div>
-                </NavLink >
+                <div className="flex flex-row items-center pl-2">
+                    <GripVertical className="w-4 h-4 text-transparent hover:text-muted-foreground hover:bg-muted" {...listeners} />
+                    <NavLink to={`notebook/${getNotebookId(currentPage.path)}/section/${sectionId}/page/${currentPage.id}`} >
+                        <div className={cn("text-left p-2 text-primary",
+                        )}>
+                            <h4 className="truncate max-w-36" style={{
+                                maxWidth: `${144 - currentPage.level * 12}px`
+                            }}
+                                title={currentPage.title}>{currentPage.title}</h4>
+                        </div>
+                    </NavLink >
+                </div>
                 <div className="mr-4">
                     <Button size="icon" variant="ghost" className=" w-4 h-4" onClick={() => { setOpen(!open) }} >
                         {

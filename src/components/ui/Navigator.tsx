@@ -1,6 +1,19 @@
 import { useNotebookStore } from '@/lib/stores/notebook-store';
 import { usePageStore } from '@/lib/stores/page-store';
 import { useSectionStore } from '@/lib/stores/section-store';
+import {
+    closestCenter,
+    DndContext,
+    DragEndEvent,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
+import {
+    arrayMove,
+    sortableKeyboardCoordinates
+} from '@dnd-kit/sortable';
 import { BookTextIcon, ChevronsRight, FileIcon, Plus, Search } from 'lucide-react';
 import { ElementRef, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -13,12 +26,43 @@ import { PageTree } from './navigator/PageTree';
 import { SectionTree } from './navigator/SectionTree';
 
 export const Navigator = () => {
+    const { orderedPages, updatePageList } = usePageStore();
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        // Do something
+        const { active, over } = event;
+        console.log(`activeId: ${active.id}, overId: ${over?.id}`);
+
+        if (active.id !== over?.id) {
+            const newPages = (() => {
+                const oldIndex = orderedPages.indexOf(active.id as string);
+                const newIndex = orderedPages.indexOf(over?.id as string);
+
+                return arrayMove(orderedPages, oldIndex, newIndex);
+            })();
+            updatePageList(newPages);
+            console.log(orderedPages);
+        }
+    }
+
     return (
-        <div className="flex flex-row gap-0">
-            <NavBar />
-            <PageBar />
-        </div>
-    )
+        <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+        >
+            <div className="flex flex-row gap-0">
+                <NavBar />
+                <PageBar />
+            </div>
+        </DndContext>
+    );
 }
 
 const NavBar = () => {

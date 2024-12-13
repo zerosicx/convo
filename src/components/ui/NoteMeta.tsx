@@ -68,8 +68,8 @@ const NoteMeta = () => {
                         `${notebookName} / ${sectionName} `
                     }
                     {
-                        pagePath?.map((page) => {
-                            return <NavLink to={`notebook/${params?.notebookId}/section/${params?.sectionId}/page/${page?.id}`}>
+                        pagePath?.map((page, index) => {
+                            return <NavLink to={`notebook/${params?.notebookId}/section/${params?.sectionId}/page/${page?.id}`} key={index}>
                                 <span className="text-muted-foreground hover:text-indigo-500 hover:font-medium">/ {page?.title} </span>
                             </NavLink>
                         })
