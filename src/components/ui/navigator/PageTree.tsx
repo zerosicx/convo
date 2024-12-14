@@ -87,10 +87,10 @@ export const PageItem = ({ currentPage }: {
     return (
         <div style={{ marginLeft: `${4 * currentPage.level}px`, ...transformStyle }} ref={setNodeRef} {...attributes} >
             <div className={cn("flex flex-row justify-between w-full items-center text-sm relative", params.pageId === currentPage.id && "bg-neutral-200/80")}>
-                <div className="flex flex-row items-center pl-2">
+                <div className="flex flex-row items-center pl-2 gap-1">
                     <GripVertical className="w-4 h-4 text-transparent hover:text-muted-foreground hover:bg-muted" {...listeners} />
                     <NavLink to={`notebook/${getNotebookId(currentPage.path)}/section/${sectionId}/page/${currentPage.id}`} >
-                        <div className={cn("text-left p-2 text-primary",
+                        <div className={cn("text-left py-1 text-primary",
                         )}>
                             <h4 className="truncate max-w-36" style={{
                                 maxWidth: `${144 - currentPage.level * 12}px`

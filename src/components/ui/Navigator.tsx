@@ -26,7 +26,7 @@ import { PageTree } from './navigator/PageTree';
 import { SectionTree } from './navigator/SectionTree';
 
 export const Navigator = () => {
-    const { orderedPages, updatePageList } = usePageStore();
+    const { orderedPages, updatePageList, getPageById, updatePageById } = usePageStore();
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -34,8 +34,6 @@ export const Navigator = () => {
         })
     );
 
-
-    // TODO: Handle dragging over an item where the overId is not the same as the current active's parentPageId.
     const handleDragEnd = (event: DragEndEvent) => {
         // Do something
         const { active, over } = event;
@@ -49,6 +47,22 @@ export const Navigator = () => {
                 return arrayMove(orderedPages, oldIndex, newIndex);
             })();
             updatePageList(newPages);
+
+            // Get the parents of each item
+            const activePage = getPageById(active.id as string);
+            const overPage = getPageById(over?.id as string);
+
+            if (activePage?.level === overPage?.level && activePage?.parentPageId !== overPage?.parentPageId) {
+                // Update the active page's parent to be the same as over page, only if they're the same level.
+                console.log(`Updating ${activePage?.title}'s parent to ${activePage?.parentPageId}'s parent. `);
+                updatePageById(activePage?.id as string, { parentPageId: overPage?.parentPageId });
+            }
+
+            // If the active page is a nested page, set active's parent to the over item.
+            else if ((activePage?.level || 0) > (overPage?.level || 0)) {
+                // Update the active page's parent to be the same as over page, only if they're the same level.
+                updatePageById(activePage?.id as string, { parentPageId: overPage?.id });
+            }
             console.log(orderedPages);
         }
     }
