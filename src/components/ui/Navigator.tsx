@@ -408,7 +408,7 @@ const Sidebar = ({
   const HandleTrigger = () => {
     return (
       <div
-        className="h-screen w-2 bg-neutral-200 flex flex-col items-center z-[99999] hover:bg-blue-200"
+        className="h-screen w-2 bg-neutral-200 flex flex-col items-center z-[99999] hover:bg-neutral-200"
         onClick={() => {
           setCollapsed(false);
         }}
@@ -462,7 +462,7 @@ const Sidebar = ({
 
       {/* Sidebar Rail */}
       <div
-        className="absolute top-0 right-0 w-[2px] h-full bg-transparent cursor-col-resize hover:bg-blue-200"
+        className="absolute top-0 right-0 w-[2px] h-full bg-transparent cursor-col-resize hover:bg-neutral-200"
         onClick={handleRailClick}
         onMouseDown={handleMouseDown}
       ></div>

@@ -110,6 +110,11 @@ const tableData = [
     notes: "Move around and re-order your pages freely.",
   },
   {
+    feature: "Resizable and Collapsible Sidebars",
+    status: "✅",
+    notes: "Modify preferred UI by providing collapsible sidebars.",
+  },
+  {
     feature: "Search Notes",
     status: "👩‍💻",
     notes: "A modal to search pages and sections.",
