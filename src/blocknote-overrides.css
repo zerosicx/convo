@@ -1,4 +1,6 @@
 .bn-block-content {
+  font-family: Raleway, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
   & h1 {
     font-size: xx-large;
   }
