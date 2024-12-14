@@ -20,7 +20,9 @@ const LandingPage = () => {
                         <NavLink to="/app">
                             <Button size="lg" >Get Convo</Button>
                         </NavLink>
-                        <Button size="lg" variant="secondary">Learn more</Button>
+                        <NavLink to="/about">
+                            <Button size="lg" variant="secondary">Learn more</Button>
+                        </NavLink>
                     </div>
                 </div>
                 <img src="/conversation.webp" height={400} width={400} className="rounded-md drop-shadow-md" />
