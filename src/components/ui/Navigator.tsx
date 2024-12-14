@@ -34,6 +34,8 @@ export const Navigator = () => {
         })
     );
 
+
+    // TODO: Handle dragging over an item where the overId is not the same as the current active's parentPageId.
     const handleDragEnd = (event: DragEndEvent) => {
         // Do something
         const { active, over } = event;

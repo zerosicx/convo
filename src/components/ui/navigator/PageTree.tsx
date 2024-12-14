@@ -77,17 +77,15 @@ export const PageItem = ({ currentPage }: {
         listeners,
         setNodeRef,
         transform,
-        transition,
     } = useSortable({ id: currentPage.id });
 
-    const style = {
+    const transformStyle = {
         transform: CSS.Transform.toString(transform),
-        transition,
     };
 
     // Level will be a multiplier for nesting
     return (
-        <div style={{ marginLeft: `${4 * currentPage.level}px`, ...style }} ref={setNodeRef} {...attributes} >
+        <div style={{ marginLeft: `${4 * currentPage.level}px`, ...transformStyle }} ref={setNodeRef} {...attributes} >
             <div className={cn("flex flex-row justify-between w-full items-center text-sm relative", params.pageId === currentPage.id && "bg-neutral-200/80")}>
                 <div className="flex flex-row items-center pl-2">
                     <GripVertical className="w-4 h-4 text-transparent hover:text-muted-foreground hover:bg-muted" {...listeners} />
