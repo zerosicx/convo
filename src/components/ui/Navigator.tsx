@@ -1,6 +1,21 @@
+import { useDndStore } from '@/lib/stores/dnd-store';
 import { useNotebookStore } from '@/lib/stores/notebook-store';
 import { usePageStore } from '@/lib/stores/page-store';
 import { useSectionStore } from '@/lib/stores/section-store';
+import {
+    closestCenter,
+    DndContext,
+    DragEndEvent,
+    DragStartEvent,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
+import {
+    arrayMove,
+    sortableKeyboardCoordinates
+} from '@dnd-kit/sortable';
 import { BookTextIcon, ChevronsRight, FileIcon, Plus, Search } from 'lucide-react';
 import { ElementRef, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -13,12 +28,73 @@ import { PageTree } from './navigator/PageTree';
 import { SectionTree } from './navigator/SectionTree';
 
 export const Navigator = () => {
+    const { setActiveId } = useDndStore();
+    const { orderedPages, updatePageList, getPageById, updatePageById } = usePageStore();
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
+    const handleDragStart = (event: DragStartEvent) => {
+        const { active } = event;
+        setActiveId(active.id as string);
+    }
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        // Do something
+        const { active, over } = event;
+        console.log(`activeId: ${active.id}, overId: ${over?.id}`);
+
+        if (active.id !== over?.id) {
+            const newPages = (() => {
+                const oldIndex = orderedPages.indexOf(active.id as string);
+                const newIndex = orderedPages.indexOf(over?.id as string);
+
+                return arrayMove(orderedPages, oldIndex, newIndex);
+            })();
+            updatePageList(newPages);
+
+
+            // Get the parents of each item
+            const activePage = getPageById(active.id as string);
+            const overPage = getPageById(over?.id as string);
+
+            if (activePage?.level === overPage?.level && activePage?.parentPageId !== overPage?.parentPageId) {
+                // Update the active page's parent to be the same as over page, only if they're the same level.
+                console.log(`Updating ${activePage?.title}'s parent to ${activePage?.parentPageId}'s parent. `);
+                updatePageById(activePage?.id as string, { parentPageId: overPage?.parentPageId });
+            }
+
+            // If the active page is more nested, set active's parent to the over item.
+            else if ((activePage?.level || 0) > (overPage?.level || 0)) {
+                updatePageById(activePage?.id as string, { parentPageId: overPage?.id });
+            }
+
+            // If the active page is less nested, make it nested to the same parent as the over page
+            else if ((activePage?.level || 0) < (overPage?.level || 0)) {
+                updatePageById(activePage?.id as string, { parentPageId: overPage?.parentPageId, level: overPage?.level });
+            }
+            setActiveId("");
+        } else {
+            updatePageById(active.id as string, { parentPageId: null, level: 0 });
+        }
+    }
+
     return (
-        <div className="flex flex-row gap-0">
-            <NavBar />
-            <PageBar />
-        </div>
-    )
+        <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            onDragStart={handleDragStart}
+        >
+            <div className="flex flex-row gap-0">
+                <NavBar />
+                <PageBar />
+            </div>
+        </DndContext>
+    );
 }
 
 const NavBar = () => {
