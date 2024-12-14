@@ -33,7 +33,7 @@ jest.config.js
 __tests__/
 
 # Dependency locks
-package-lock.json
+# package-lock.json
 yarn.lock
 pnpm-lock.yaml
 
