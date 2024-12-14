@@ -1,3 +1,4 @@
+import { useDndStore } from '@/lib/stores/dnd-store';
 import { useNotebookStore } from '@/lib/stores/notebook-store';
 import { usePageStore } from '@/lib/stores/page-store';
 import { useSectionStore } from '@/lib/stores/section-store';
@@ -5,6 +6,7 @@ import {
     closestCenter,
     DndContext,
     DragEndEvent,
+    DragStartEvent,
     KeyboardSensor,
     PointerSensor,
     useSensor,
@@ -26,6 +28,7 @@ import { PageTree } from './navigator/PageTree';
 import { SectionTree } from './navigator/SectionTree';
 
 export const Navigator = () => {
+    const { setActiveId } = useDndStore();
     const { orderedPages, updatePageList, getPageById, updatePageById } = usePageStore();
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -33,6 +36,11 @@ export const Navigator = () => {
             coordinateGetter: sortableKeyboardCoordinates,
         })
     );
+
+    const handleDragStart = (event: DragStartEvent) => {
+        const { active } = event;
+        setActiveId(active.id as string);
+    }
 
     const handleDragEnd = (event: DragEndEvent) => {
         // Do something
@@ -48,6 +56,7 @@ export const Navigator = () => {
             })();
             updatePageList(newPages);
 
+
             // Get the parents of each item
             const activePage = getPageById(active.id as string);
             const overPage = getPageById(over?.id as string);
@@ -58,12 +67,18 @@ export const Navigator = () => {
                 updatePageById(activePage?.id as string, { parentPageId: overPage?.parentPageId });
             }
 
-            // If the active page is a nested page, set active's parent to the over item.
+            // If the active page is more nested, set active's parent to the over item.
             else if ((activePage?.level || 0) > (overPage?.level || 0)) {
-                // Update the active page's parent to be the same as over page, only if they're the same level.
                 updatePageById(activePage?.id as string, { parentPageId: overPage?.id });
             }
-            console.log(orderedPages);
+
+            // If the active page is less nested, make it nested to the same parent as the over page
+            else if ((activePage?.level || 0) < (overPage?.level || 0)) {
+                updatePageById(activePage?.id as string, { parentPageId: overPage?.parentPageId, level: overPage?.level });
+            }
+            setActiveId("");
+        } else {
+            updatePageById(active.id as string, { parentPageId: null, level: 0 });
         }
     }
 
@@ -72,6 +87,7 @@ export const Navigator = () => {
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
+            onDragStart={handleDragStart}
         >
             <div className="flex flex-row gap-0">
                 <NavBar />

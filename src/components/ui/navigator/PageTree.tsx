@@ -1,8 +1,12 @@
 import { Page } from "@/lib/definitions";
+import { useDndStore } from "@/lib/stores/dnd-store";
 import { usePageStore } from "@/lib/stores/page-store";
 import { cn } from "@/lib/utils";
+import { DragOverlay } from "@dnd-kit/core";
+import {
+    restrictToParentElement
+} from '@dnd-kit/modifiers';
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { CSS } from '@dnd-kit/utilities';
 import { ChevronDown, ChevronUp, FileIcon, GripVertical } from "lucide-react";
 import { ElementRef, useRef, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
@@ -12,6 +16,7 @@ import { Input } from "../Input";
 
 export const PageTree = ({ sectionId }: { sectionId: string }) => {
     const { pages, orderedPages } = usePageStore();
+    const { activeId } = useDndStore();
 
     // Modify this function to use orderedPages and retrieve the actual page objects
     const getTopLevelPagesFromSection = () => {
@@ -33,6 +38,11 @@ export const PageTree = ({ sectionId }: { sectionId: string }) => {
                         )
                     })
                 }
+                <DragOverlay modifiers={[restrictToParentElement]}>
+                    {
+                        activeId && <PageItem currentPage={pages[activeId]} />
+                    }
+                </DragOverlay>
             </SortableContext>
         </div>
     );
@@ -76,21 +86,24 @@ export const PageItem = ({ currentPage }: {
         attributes,
         listeners,
         setNodeRef,
-        transform,
+        // transform,
+        // transition
     } = useSortable({ id: currentPage.id });
 
-    const transformStyle = {
-        transform: CSS.Transform.toString(transform),
-    };
+    // TODO: Avoiding transform due to dnd-kit DragOverlay issue.
+    // const transformStyle = {
+    //     transform: CSS.Transform.toString(transform),
+    //     transition
+    // };
 
     // Level will be a multiplier for nesting
     return (
-        <div style={{ marginLeft: `${4 * currentPage.level}px`, ...transformStyle }} ref={setNodeRef} {...attributes} >
+        <div style={{ marginLeft: `${4 * currentPage.level}px` }} ref={setNodeRef} {...attributes} >
             <div className={cn("flex flex-row justify-between w-full items-center text-sm relative", params.pageId === currentPage.id && "bg-neutral-200/80")}>
                 <div className="flex flex-row items-center pl-2 gap-1">
                     <GripVertical className="w-4 h-4 text-transparent hover:text-muted-foreground hover:bg-muted" {...listeners} />
                     <NavLink to={`notebook/${getNotebookId(currentPage.path)}/section/${sectionId}/page/${currentPage.id}`} >
-                        <div className={cn("text-left py-1 text-primary",
+                        <div className={cn("text-left py-1 text-primary w-full",
                         )}>
                             <h4 className="truncate max-w-36" style={{
                                 maxWidth: `${144 - currentPage.level * 12}px`
