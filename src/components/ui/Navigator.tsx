@@ -175,12 +175,9 @@ const NavBar = () => {
                                     <NavGroupTrigger>
                                         <div className="flex flex-row items-center justify-between w-full">
                                             {
-                                                !editing && <span className="max-w-32 truncate" title={notebook.name}>{notebook.name}</span>
-                                            }
-                                            {
-                                                editing && <Input autoFocus variant="transparent" placeholder={notebook.name} onKeyDown={handleKeyDown} onChange={(e) => {
+                                                editing ? <Input autoFocus variant="transparent" placeholder={notebook.name} onKeyDown={handleKeyDown} onChange={(e) => {
                                                     handleChange(e.target.value, notebook.id)
-                                                }} onBlur={() => setEditing(false)} />
+                                                }} onBlur={() => setEditing(false)} /> : <span className="max-w-32 truncate" title={notebook.name}>{notebook.name}</span>
                                             }
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger className="bg-transparent w-fit h-fit p-1 outline-none focus:outline-none border-0 focus-visible:outline-none">

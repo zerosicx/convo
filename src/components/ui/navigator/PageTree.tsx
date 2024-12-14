@@ -133,15 +133,11 @@ export const PageItem = ({ currentPage }: {
                     <NavLink to={`notebook/${getNotebookId(currentPage.path)}/section/${sectionId}/page/${currentPage.id}`} >
                         <div className={cn("text-left py-1 text-primary w-full",
                         )}>
-
                             {
-                                !editing && <h4 className="truncate max-w-36" style={{
+                                editing ? <Input autoFocus variant="transparent" placeholder={currentPage.title} onKeyDown={handleKeyDown} onChange={handleChange} onBlur={() => setEditing(false)} /> : <h4 className="truncate max-w-36" style={{
                                     maxWidth: `${144 - currentPage.level * 12}px`
                                 }}
                                     title={currentPage.title}>{currentPage.title}</h4>
-                            }
-                            {
-                                editing && <Input autoFocus variant="transparent" placeholder={currentPage.title} onKeyDown={handleKeyDown} onChange={handleChange} onBlur={() => setEditing(false)} />
                             }
                         </div>
                     </NavLink >
