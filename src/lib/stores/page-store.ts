@@ -133,9 +133,18 @@ export const usePageStore = create<PageStore>()(
         set((state: PageStore) => {
           const updatedPages = { ...state.pages };
           delete updatedPages[id];
+
           const updatedOrderedPages = state.orderedPages.filter(
             (pageId) => pageId !== id
           );
+
+          Object.keys(updatedPages).forEach((pageKey) => {
+            const page = updatedPages[pageKey];
+            if (page.parentPageId === id) {
+              delete updatedPages[pageKey]; // Remove child page
+            }
+          });
+
           return { pages: updatedPages, orderedPages: updatedOrderedPages };
         }),
 

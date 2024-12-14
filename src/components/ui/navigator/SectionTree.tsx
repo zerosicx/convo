@@ -3,7 +3,7 @@ import { NotebookId, Section } from '@/lib/definitions'
 import { usePageStore } from '@/lib/stores/page-store'
 import { useSectionStore } from '@/lib/stores/section-store'
 import { cn } from '@/lib/utils'
-import { Ellipsis, Pencil, Plus, Trash2 } from 'lucide-react'
+import { EllipsisVertical, Pencil, Plus, Trash2 } from 'lucide-react'
 import { ElementRef, useRef, useState } from 'react'
 import { NavLink, useParams } from 'react-router-dom'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../alert-dialog'
@@ -63,7 +63,7 @@ const SectionItem = ({ notebookId, section, selected }:
                 <DropdownMenu>
                     <DropdownMenuTrigger className="bg-transparent w-fit h-fit p-1 outline-none focus:outline-none border-0 focus-visible:outline-none">
                         <Button variant="ghost" size="icon">
-                            <Ellipsis className="w-4 h-4 text-muted-foreground" />
+                            <EllipsisVertical className="w-4 h-4 text-muted-foreground" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="px-2">
@@ -87,7 +87,7 @@ const SectionItem = ({ notebookId, section, selected }:
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleDeleteClick}>Continue</AlertDialogAction>
+                                    <AlertDialogAction className="bg-red-700" onClick={handleDeleteClick}>Continue</AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                         </AlertDialog>

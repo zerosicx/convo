@@ -1,3 +1,4 @@
+import { toast } from '@/hooks/use-toast';
 import { useDndStore } from '@/lib/stores/dnd-store';
 import { useNotebookStore } from '@/lib/stores/notebook-store';
 import { usePageStore } from '@/lib/stores/page-store';
@@ -16,7 +17,7 @@ import {
     arrayMove,
     sortableKeyboardCoordinates
 } from '@dnd-kit/sortable';
-import { BookTextIcon, ChevronsRight, FileIcon, Plus, Search } from 'lucide-react';
+import { BookTextIcon, ChevronsRight, EllipsisVertical, FileIcon, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import { ElementRef, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from './Button';
@@ -24,6 +25,8 @@ import { Input } from './Input';
 import { Label } from './Label';
 import { NavGroup, NavGroupContent, NavGroupItem, NavGroupTrigger } from './NavGroup';
 import { ScrollArea, ScrollBar } from './ScrollArea';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './alert-dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from './dropdown-menu';
 import { PageTree } from './navigator/PageTree';
 import { SectionTree } from './navigator/SectionTree';
 
@@ -99,9 +102,12 @@ export const Navigator = () => {
 
 const NavBar = () => {
 
-    const { notebooks, createNotebook } = useNotebookStore();
+    const { notebooks, createNotebook, updateNotebookById, deleteNotebook } = useNotebookStore();
+    const { removeSection } = useSectionStore();
+    const { removeBySection } = usePageStore();
     const [creatingNotebook, setCreatingNotebook] = useState<boolean>(false);
     const notebookInputRef = useRef<ElementRef<"input">>(null);
+    const [editing, setEditing] = useState<boolean>(false);
     const nav = useNavigate();
 
     const handleCreateNewNotebook = (event: React.KeyboardEvent) => {
@@ -111,6 +117,41 @@ const NavBar = () => {
             createNotebook(notebookInputRef?.current?.value ?? "Untitled Notebook", "1");
             setCreatingNotebook(false);
         }
+    }
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === "Enter") {
+            setEditing(false);
+            toast({
+                variant: "success",
+                description: `Successfully updated Notebook name.`
+            })
+        }
+    }
+
+    const handleChange = (newName: string, notebookId: string) => {
+        // Update the section name
+        updateNotebookById(notebookId, {
+            name: newName
+        });
+    }
+
+    const handleDeleteClick = (notebookId: string) => {
+        const notebookToDelete = notebooks[notebookId];
+
+        // Delete all related sections
+        notebookToDelete.sections.map((sectionId) => {
+            removeSection(sectionId);
+            // Delete all related pages
+            removeBySection(sectionId);
+
+        })
+        deleteNotebook(notebookId);
+        nav("/app");
+        toast({
+            variant: 'destructive',
+            description: 'Succesfully deleted Notebook and all associated sections and pages.'
+        })
     }
 
     return (
@@ -132,8 +173,48 @@ const NavBar = () => {
                             return (
                                 <NavGroupItem value={notebook.id} key={index}>
                                     <NavGroupTrigger>
-                                        <div className="flex flex-row gap-2 items-center">
-                                            <span className="max-w-32 truncate" title={notebook.name}>{notebook.name}</span>
+                                        <div className="flex flex-row items-center justify-between w-full">
+                                            {
+                                                !editing && <span className="max-w-32 truncate" title={notebook.name}>{notebook.name}</span>
+                                            }
+                                            {
+                                                editing && <Input autoFocus variant="transparent" placeholder={notebook.name} onKeyDown={handleKeyDown} onChange={(e) => {
+                                                    handleChange(e.target.value, notebook.id)
+                                                }} onBlur={() => setEditing(false)} />
+                                            }
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger className="bg-transparent w-fit h-fit p-1 outline-none focus:outline-none border-0 focus-visible:outline-none">
+                                                    <Button variant="ghost" size="icon">
+                                                        <EllipsisVertical className="w-4 h-4 text-muted-foreground" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent className="px-2">
+                                                    <Label className="text-muted-foreground">Edit Menu</Label>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem onClick={() => setEditing(true)}>
+                                                        <Pencil className="w-4 h-4 text-muted-foreground" /> <span className="text-neutral-800">Rename</span>
+                                                    </DropdownMenuItem>
+                                                    <AlertDialog>
+                                                        <AlertDialogTrigger className="bg-transparent rounded-sm text-sm flex flex-row items-center  w-full py-1.5 px-2 gap-2 font-normal outline-none border-0 focus:outline-none focus-visible:outline-none focus:bg-accent focus:text-accent-foreground hover:bg-accent hover:text-accent-foreground">
+                                                            <Trash2 className="w-4 h-4 text-muted-foreground" /> <span className="text-neutral-800">Delete</span>
+                                                        </AlertDialogTrigger>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader>
+                                                                <AlertDialogTitle>
+                                                                    Are you absolutely sure?
+                                                                </AlertDialogTitle>
+                                                                <AlertDialogDescription>
+                                                                    Deleting notebook "{notebook.name}" is irreversible. This will permanently remove this notebook and all related sections and pages.
+                                                                </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+                                                            <AlertDialogFooter>
+                                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                <AlertDialogAction className="bg-red-700" onClick={() => { handleDeleteClick(notebook.id) }}>Continue</AlertDialogAction>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialog>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
                                         </div>
                                     </NavGroupTrigger>
                                     <NavGroupContent className="flex flex-col gap-2 ml-4">
