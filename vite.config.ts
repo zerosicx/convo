@@ -2,8 +2,10 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vite";
 
-export default defineConfig({
+// Define the base URL based on the mode
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
+  base: mode === "production" ? "/convo/" : "/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -12,4 +14,4 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ["js-big-decimal"],
   },
-});
+}));
