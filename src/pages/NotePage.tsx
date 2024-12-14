@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import noteImage from "@/assets/writing.webp";
 import NoteMeta from "@/components/ui/NoteMeta";
 import { usePageStore } from "@/lib/stores/page-store";
 import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
@@ -46,7 +47,7 @@ const NotePage = () => {
       <div className="w-full h-screen items-center justify-center flex flex-col gap-10">
         <h3 className="text-2xl font-italic">Why not write a new note?</h3>
         <img
-          src="/writing.webp"
+          src={noteImage}
           width={350}
           height={350}
           className="rounded-md drop-shadow-md"

@@ -1,3 +1,4 @@
+import creatorImage from "@/assets/Creator.png";
 import { Button } from "@/components/ui/Button";
 import {
   Table,
@@ -38,7 +39,7 @@ const AboutPage = () => {
               ability.
             </p>
           </div>
-          <img src="/Creator.png" className="w-[350px]" />
+          <img src={creatorImage} className="w-[350px]" />
         </div>
 
         <div className="flex flex-col items-center">
