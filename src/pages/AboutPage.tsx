@@ -110,6 +110,16 @@ const tableData = [
     notes: "Move around and re-order your pages freely.",
   },
   {
+    feature: "Search Notes",
+    status: "👩‍💻",
+    notes: "A modal to search pages and sections.",
+  },
+  {
+    feature: "Themes",
+    status: "👩‍💻",
+    notes: "Supercool customisable themes.",
+  },
+  {
     feature: "Infinite Canvas Pages",
     status: "👩‍💻",
     notes: "Pages can either be markdown notes or an infintie-canvas.",
