@@ -8,7 +8,7 @@ import {
     restrictToParentElement
 } from '@dnd-kit/modifiers';
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { ChevronDown, ChevronRight, EllipsisVertical, FileIcon, GripVertical, Pencil, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronRight, EllipsisVertical, FileIcon, GripVertical, Pencil, Plus, Trash2 } from "lucide-react";
 import { ElementRef, useRef, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../alert-dialog";
@@ -150,6 +150,12 @@ export const PageItem = ({ currentPage }: {
                         <DropdownMenuContent className="px-2">
                             <Label className="text-muted-foreground">Edit Menu</Label>
                             <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => {
+                                setOpen(true);
+                                setCreatingPage(true)
+                            }}>
+                                <Plus className="w-4 h-4 text-muted-foreground" /> <span className="text-neutral-800">Add nested page</span>
+                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setEditing(true)}>
                                 <Pencil className="w-4 h-4 text-muted-foreground" /> <span className="text-neutral-800">Rename</span>
                             </DropdownMenuItem>
