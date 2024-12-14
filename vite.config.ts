@@ -5,7 +5,7 @@ import { defineConfig } from "vite";
 // Define the base URL based on the mode
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
-  base: mode === "production" ? "/convo/" : "/",
+  base: mode === "production" ? "/convo" : "/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
