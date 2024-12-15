@@ -3,7 +3,7 @@ import noteImage from "@/assets/writing.webp";
 import NoteMeta from "@/components/ui/NoteMeta";
 import { usePageStore } from "@/lib/stores/page-store";
 import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
-import { BlockNoteView, lightDefaultTheme } from "@blocknote/mantine";
+import { BlockNoteView } from "@blocknote/mantine";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -40,14 +40,6 @@ const NotePage = () => {
       });
     }
   }, [editor, page?.id, updatePageById]);
-
-  const lightTheme = {
-    ...lightDefaultTheme,
-    editor: {
-      text: "blue",
-      background: "#fafafa",
-    },
-  };
 
   // Handle missing pageId
   if (!params.pageId) {
