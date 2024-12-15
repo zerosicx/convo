@@ -31,12 +31,16 @@ const AboutPage = () => {
         </h1>
         <div className="flex flex-row justify-center items-center px-20 bg-red-200 flex-wrap py-8">
           <div className="flex flex-col items-center sm:w-[80%] md:w-[40%]">
-            <h1 className="text-3xl font-semibold gamja-flower">I'm Hannah.</h1>
+            <h1 className="text-3xl font-semibold gamja-flower">
+              Author's Note
+            </h1>
             <p className="text-center">
-              I'm a freshly graduated software engineering student. I'm going to
-              be working at Canva, so I want to freshen up on my design and
-              development skills to be able to perform at the best of my
-              ability.
+              Hi there! 🎨💻 I’m a freshly graduated software engineering human
+              who’s about to embark on an adventure at Canva! Before I dive into
+              the world of pixels and code, I’m brushing up on my design and
+              development wizardry ✨ — because creating cool stuff is way more
+              fun when you know your magic spells. Stick around and see what
+              mischief I code up! 🚀🌈
             </p>
           </div>
           <img src={creatorImage} className="w-[350px]" />
