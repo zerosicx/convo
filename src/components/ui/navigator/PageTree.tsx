@@ -14,7 +14,6 @@ import {
   ChevronDown,
   ChevronRight,
   EllipsisVertical,
-  FileIcon,
   GripVertical,
   Pencil,
   Plus,
@@ -58,7 +57,7 @@ export const PageTree = ({ sectionId }: { sectionId: string }) => {
   };
 
   return (
-    <div>
+    <div className="mt-4" style={{ maxWidth: "inherit", width: "inherit" }}>
       <SortableContext
         items={orderedPages}
         strategy={verticalListSortingStrategy}
@@ -159,33 +158,35 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
     >
       <div
         className={cn(
-          "flex flex-row justify-between w-full items-center text-sm relative",
-          params.pageId === currentPage.id && "bg-neutral-200/80"
+          "flex flex-row justify-between  items-center text-sm relative mx-2 rounded-md h-10",
+          params.pageId === currentPage.id && "bg-zinc-200/80"
         )}
       >
-        <div className="flex flex-row items-center pl-2 gap-1">
-          <GripVertical
-            className="w-4 h-4 text-transparent hover:text-muted-foreground hover:bg-muted"
-            {...listeners}
-          />
-          <NavLink
-            to={`notebook/${getNotebookId(
-              currentPage.path
-            )}/section/${sectionId}/page/${currentPage.id}`}
-          >
-            <div className={cn("text-left py-1 text-primary w-full")}>
+        <NavLink
+          to={`notebook/${getNotebookId(
+            currentPage.path
+          )}/section/${sectionId}/page/${currentPage.id}`}
+          className="w-full"
+        >
+          <div className="flex flex-row items-center pl-2 gap-1">
+            <GripVertical
+              className="w-4 h-4 text-transparent hover:text-zinc-800 hover:bg-muted"
+              {...listeners}
+            />
+
+            <div className={cn("text-left text-primary w-full")}>
               {editing ? (
                 <Input
                   autoFocus
-                  variant="transparent"
                   placeholder={currentPage.title}
                   onKeyDown={handleKeyDown}
                   onChange={handleChange}
                   onBlur={() => setEditing(false)}
+                  className="text-zinc-800 border-0 outline-none focus:outline-none shadow-none"
                 />
               ) : (
                 <h4
-                  className="truncate max-w-36"
+                  className="truncate max-w-36 font-medium"
                   style={{
                     maxWidth: `${144 - currentPage.level * 12}px`,
                   }}
@@ -195,15 +196,37 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
                 </h4>
               )}
             </div>
-          </NavLink>
-        </div>
+          </div>
+        </NavLink>
+        <div
+          title="Add nested page"
+          className="absolute bottom-0 text-zinc-800 w-full h-1 bg-transparent hover:bg-brand cursor-cell rounded-md rounded-t-none"
+          onClick={() => {
+            setCreatingPage(true);
+            setOpen(true);
+          }}
+          style={{ marginLeft: `${4 * currentPage.level}px` }}
+        ></div>
         <div className="mr-4 flex flex-row gap-1 items-center">
+          {childPages.length >= 1 && (
+            <Button
+              size="icon"
+              variant="ghost"
+              className="w-4 h-4 hover:text-muted-foreground hover:bg-zinc-200 active:bg-zinc-400"
+              onClick={() => {
+                setOpen(!open);
+              }}
+            >
+              {open && <ChevronDown className="w-2 h-2 text-zinc-800" />}
+              {!open && <ChevronRight className="w-2 h-2 text-zinc-800" />}
+            </Button>
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger className="bg-transparent p-1 outline-none focus:outline-none border-0 focus-visible:outline-none">
-              <EllipsisVertical className="w-4 h-4 text-muted-foreground" />
+              <EllipsisVertical className="w-4 h-4 text-zinc-800" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="px-2">
-              <Label className="text-muted-foreground">Edit Menu</Label>
+              <Label className="text-zinc-800">Edit Menu</Label>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {
@@ -211,17 +234,17 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
                   setCreatingPage(true);
                 }}
               >
-                <Plus className="w-4 h-4 text-muted-foreground" />{" "}
-                <span className="text-neutral-800">Add nested page</span>
+                <Plus className="w-4 h-4 text-zinc-800" />{" "}
+                <span className="text-zinc-800">Add nested page</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setEditing(true)}>
-                <Pencil className="w-4 h-4 text-muted-foreground" />{" "}
-                <span className="text-neutral-800">Rename</span>
+                <Pencil className="w-4 h-4 text-zinc-800" />{" "}
+                <span className="text-zinc-800">Rename</span>
               </DropdownMenuItem>
               <AlertDialog>
                 <AlertDialogTrigger className="bg-transparent rounded-sm text-sm flex flex-row items-center  w-full py-1.5 px-2 gap-2 font-normal outline-none border-0 focus:outline-none focus-visible:outline-none focus:bg-accent focus:text-accent-foreground hover:bg-accent hover:text-accent-foreground">
-                  <Trash2 className="w-4 h-4 text-muted-foreground" />{" "}
-                  <span className="text-neutral-800">Delete</span>
+                  <Trash2 className="w-4 h-4 text-zinc-800" />{" "}
+                  <span className="text-zinc-800">Delete</span>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -253,42 +276,25 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
               </AlertDialog>
             </DropdownMenuContent>
           </DropdownMenu>
-          {childPages.length >= 1 && (
-            <Button
-              size="icon"
-              variant="ghost"
-              className=" w-4 h-4"
-              onClick={() => {
-                setOpen(!open);
-              }}
-            >
-              {open && <ChevronDown className="w-2 h-2" />}
-              {!open && <ChevronRight className="w-2 h-2" />}
-            </Button>
-          )}
         </div>
       </div>
-      <div
-        title="Add nested page"
-        className="text-muted-foreground w-full h-1 bg-transparent hover:bg-blue-300 cursor-cell ml-4"
-        onClick={() => {
-          setCreatingPage(true);
-          setOpen(true);
-        }}
-      ></div>
       {open &&
         childPages.map((child, index) => {
           return <PageItem currentPage={child} key={index} />;
         })}
       {open && creatingPage && (
-        <div className="w-full">
+        <div
+          style={{
+            marginLeft: `${currentPage.level * 12 + 24}px`,
+          }}
+        >
           <Input
             autoFocus
             ref={pageInputRef}
             placeholder={"Untitled Page"}
-            startIcon={FileIcon}
             onKeyDown={handleCreateNestedPage}
             onBlur={() => setCreatingPage(false)}
+            className="text-zinc-800 border-0 outline-none focus:outline-none shadow-none"
           />
         </div>
       )}

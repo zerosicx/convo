@@ -9,8 +9,9 @@ const inputVariants = cva(
   {
     variants: {
       variant: {
-        default: "p-2 rounded-md border border-input shadow-sm transition-colors",
-        title: "border-0 border-b-4 border-blue-300 animate-pulse focus:animate-none pb-2 !placeholder:text-4xl !text-4xl",
+        default:
+          "p-2 rounded-md border border-primary-foreground/10 shadow-sm transition-colors",
+        title: "border-0 pb-2 !placeholder:text-4xl !text-4xl",
         transparent: "border-0",
       },
     },
@@ -21,13 +22,25 @@ const inputVariants = cva(
 );
 
 // Define Input Props
-interface InputProps extends React.ComponentProps<"input">, VariantProps<typeof inputVariants> {
-  startIcon?: LucideIcon;  // Optional Start Icon
-  endIcon?: LucideIcon;    // Optional End Icon
+interface InputProps
+  extends React.ComponentProps<"input">,
+    VariantProps<typeof inputVariants> {
+  startIcon?: LucideIcon; // Optional Start Icon
+  endIcon?: LucideIcon; // Optional End Icon
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, variant, type, startIcon: StartIcon, endIcon: EndIcon, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      type,
+      startIcon: StartIcon,
+      endIcon: EndIcon,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <div
         className={cn(
@@ -49,8 +62,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className={cn(
             inputVariants({ variant }),
             "w-full",
-            StartIcon && "pl-10",  // Add left padding if StartIcon exists
-            EndIcon && "pr-10",    // Add right padding if EndIcon exists
+            StartIcon && "pl-10", // Add left padding if StartIcon exists
+            EndIcon && "pr-10", // Add right padding if EndIcon exists
             className
           )}
           ref={ref}
@@ -71,4 +84,3 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = "Input";
 
 export { Input, inputVariants };
-

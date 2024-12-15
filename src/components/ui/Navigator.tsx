@@ -3,6 +3,7 @@ import { useDndStore } from "@/lib/stores/dnd-store";
 import { useNotebookStore } from "@/lib/stores/notebook-store";
 import { usePageStore } from "@/lib/stores/page-store";
 import { useSectionStore } from "@/lib/stores/section-store";
+import { cn, getOs } from "@/lib/utils";
 import {
   closestCenter,
   DndContext,
@@ -17,11 +18,13 @@ import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import {
   BookTextIcon,
   ChevronsRight,
+  Command,
   EllipsisVertical,
   FileIcon,
   Pencil,
   Plus,
   Search,
+  Settings,
   Trash2,
 } from "lucide-react";
 import { ElementRef, useRef, useState } from "react";
@@ -207,16 +210,43 @@ const NavBar = () => {
           Convo
         </h2>
       </header>
-      <div className="px-3">
-        <Input
-          startIcon={Search}
-          placeholder="Search"
-          className="rounded-sm h-7"
-        />
+      <div className="mx-3 flex flex-col gap-0">
+        <div className="p-1 hover:bg-zinc-700 flex flex-row items-center justify-between rounded-md">
+          <Label className=" text-xs flex flex-row items-center justify-between gap-2">
+            <Search className="w-3.5 h-3.5" />
+            Search
+          </Label>
+          <div className="flex flex-row items-center justify-between bg-zinc-600 rounded-md text-[0.6rem] p-1 gap-0.5">
+            <span>
+              {getOs() === "Windows" ? (
+                "Ctrl"
+              ) : (
+                <Command className="w-2.5 h-2.5" />
+              )}
+            </span>
+            <span>{"+ S"}</span>
+          </div>
+        </div>
+        <div className="p-1 hover:bg-zinc-700 flex flex-row items-center justify-between rounded-md">
+          <Label className="flex flex-row items-center justify-between gap-2 text-xs">
+            <Settings className="w-3.5 h-3.5" />
+            Settings
+          </Label>
+          <div className="flex flex-row items-center justify-between bg-zinc-600 rounded-md text-[0.6rem] p-1 gap-0.5">
+            <span>
+              {getOs() === "Windows" ? (
+                "Ctrl"
+              ) : (
+                <Command className="w-2.5 h-2.5" />
+              )}
+            </span>
+            <span>{"+ /"}</span>
+          </div>
+        </div>
       </div>
-      <div className="flex flex-col w-full px-3 items-start">
-        <div className="flex flex-row w-full justify-between items-center">
-          <Label className="text-xs text-muted-foreground">NOTEBOOKS</Label>
+      <ScrollArea className="flex flex-col w-full px-3 items-start">
+        <div className="flex flex-row w-full justify-between items-center sticky top-0 bg-brand-background z-[99999]">
+          <Label className="text-xs text-zinc-100">NOTEBOOKS</Label>
           <Button
             variant="ghost"
             size="icon"
@@ -251,22 +281,20 @@ const NavBar = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger className="bg-transparent w-fit h-fit p-1 outline-none focus:outline-none border-0 focus-visible:outline-none">
                         <Button variant="ghost" size="icon">
-                          <EllipsisVertical className="w-4 h-4 text-muted-foreground" />
+                          <EllipsisVertical className="w-4 h-4 text-zinc-100" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="px-2">
-                        <Label className="text-muted-foreground">
-                          Edit Menu
-                        </Label>
+                        <Label className="text-zinc-800">Edit Menu</Label>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => setEditing(true)}>
-                          <Pencil className="w-4 h-4 text-muted-foreground" />{" "}
-                          <span className="text-neutral-800">Rename</span>
+                          <Pencil className="w-4 h-4 text-zinc-800" />{" "}
+                          <span className="text-zinc-800">Rename</span>
                         </DropdownMenuItem>
                         <AlertDialog>
                           <AlertDialogTrigger className="bg-transparent rounded-sm text-sm flex flex-row items-center  w-full py-1.5 px-2 gap-2 font-normal outline-none border-0 focus:outline-none focus-visible:outline-none focus:bg-accent focus:text-accent-foreground hover:bg-accent hover:text-accent-foreground">
-                            <Trash2 className="w-4 h-4 text-muted-foreground" />{" "}
-                            <span className="text-neutral-800">Delete</span>
+                            <Trash2 className="w-4 h-4 text-zinc-800" />{" "}
+                            <span className="text-zinc-800">Delete</span>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
@@ -315,7 +343,7 @@ const NavBar = () => {
             />
           </div>
         )}
-      </div>
+      </ScrollArea>
     </Sidebar>
   );
 };
@@ -347,9 +375,9 @@ const PageBar = () => {
   };
 
   return (
-    <Sidebar>
+    <Sidebar className="bg-zinc-100" minWidth={250}>
       <div className="p-4 pb-0 flex flex-row justify-between items-center">
-        <Label className="text-muted-foreground text-sm">
+        <Label className="text-zinc-800 text-sm">
           {getSectionById(sectionId)?.name.toLocaleUpperCase()}
           <span> pages </span>
         </Label>
@@ -358,40 +386,46 @@ const PageBar = () => {
           variant="ghost"
           onClick={() => setCreatingPage(true)}
         >
-          <Plus className="text-muted-foreground" />
+          <Plus className="text-zinc-800" />
         </Button>
       </div>
-      <ScrollArea className="w-full h-full">
+      <ScrollArea
+        className="h-full"
+        style={{ maxWidth: "inherit", width: "inherit" }}
+      >
         <PageTree sectionId={sectionId} />
         {creatingPage && (
           <div className="w-full px-2">
             <Input
-              className="w-full"
               autoFocus
               ref={pageInputRef}
               placeholder={"Untitled Page"}
               startIcon={FileIcon}
               onKeyDown={handleCreatePage}
               onBlur={() => setCreatingPage(false)}
+              className="text-zinc-800 border-0 outline-none focus:outline-none shadow-none"
             />
           </div>
         )}
-        <div className="h-5"></div>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </Sidebar>
   );
 };
 
+type SidebarProps = {
+  children: React.ReactNode;
+  minWidth?: number;
+  maxWidth?: number;
+} & React.HTMLAttributes<HTMLDivElement>;
+
 const Sidebar = ({
   children,
   minWidth = 200,
   maxWidth = 300,
-}: {
-  children: React.ReactNode;
-  minWidth?: number;
-  maxWidth?: number;
-}) => {
+  className,
+  ...rest
+}: SidebarProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const sidebarRef = useRef<ElementRef<"div">>(null);
   const isResizingRef = useRef<boolean>(false);
@@ -408,12 +442,12 @@ const Sidebar = ({
   const HandleTrigger = () => {
     return (
       <div
-        className="h-screen w-2 bg-neutral-200 flex flex-col items-center z-[99999] hover:bg-neutral-200"
+        className="h-screen w-2 bg-brand-background flex flex-col items-center z-[99999] hover:bg-zinc-600"
         onClick={() => {
           setCollapsed(false);
         }}
       >
-        <ChevronsRight className="w-3 h-3 my-4" />
+        <ChevronsRight className="w-3 h-3 my-4 text-zinc-50" />
       </div>
     );
   };
@@ -452,8 +486,12 @@ const Sidebar = ({
 
   return (
     <div
+      {...rest}
       ref={sidebarRef}
-      className="relative min-w-40 h-screen bg-white border-r border-neutral-50 flex flex-col gap-4 text-primary drop-shadow-md"
+      className={cn(
+        "relative min-w-40 h-screen bg-brand-background flex flex-col gap-4 text-primary-foreground drop-shadow-md",
+        className
+      )}
       style={{
         width: minWidth,
       }}
@@ -462,7 +500,7 @@ const Sidebar = ({
 
       {/* Sidebar Rail */}
       <div
-        className="absolute top-0 right-0 w-[2px] h-full bg-transparent cursor-col-resize hover:bg-neutral-200"
+        className="absolute top-0 right-0 w-[2px] h-full bg-transparent cursor-col-resize hover:bg-zinc-400"
         onClick={handleRailClick}
         onMouseDown={handleMouseDown}
       ></div>

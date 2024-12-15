@@ -41,6 +41,14 @@ const NotePage = () => {
     }
   }, [editor, page?.id, updatePageById]);
 
+  const lightTheme = {
+    ...lightDefaultTheme,
+    editor: {
+      text: "blue",
+      background: "#fafafa",
+    },
+  };
+
   // Handle missing pageId
   if (!params.pageId) {
     return (
@@ -64,7 +72,6 @@ const NotePage = () => {
           <BlockNoteView
             className="overflow-hidden"
             editor={editor}
-            theme={lightDefaultTheme}
             onChange={handleContentChange}
           />
         )}

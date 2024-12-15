@@ -1,7 +1,7 @@
 import uuid4 from "uuid4";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { generateRandomColour } from "../utils";
+import { getRandomRedPinkHex } from "../utils";
 
 // Section Type Definition
 export interface Section {
@@ -50,7 +50,7 @@ export const useSectionStore = create<SectionStore>()(
         color: string | undefined
       ) => {
         const id = "section-" + uuid4();
-        if (!color) color = generateRandomColour();
+        if (!color) color = getRandomRedPinkHex();
         const newSection: Section = {
           id,
           name,

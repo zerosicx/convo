@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .bn-block-content {
   font-family: Raleway, system-ui, Avenir, Helvetica, Arial, sans-serif;
 
@@ -14,4 +18,16 @@
   }
 
   font-size: small;
+}
+
+/* Base theme */
+.bn-container[data-theming-css-variables-demo][data-color-scheme] {
+  --bn-colors-editor-background: #fafafa;
+  --bn-colors-editor-text: "var(--text-primary)";
+}
+
+/* Changes for dark mode */
+.bn-container[data-color-scheme="dark"] {
+  --bn-colors-editor-background: #fafafa;
+  --bn-colors-editor-text: "var(--text-primary)";
 }
