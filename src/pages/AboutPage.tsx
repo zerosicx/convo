@@ -116,6 +116,17 @@ const tableData = [
     notes: "Modify preferred UI by providing collapsible sidebars.",
   },
   {
+    feature: "Inbox for Uncategorised Pages",
+    status: "✅",
+    notes: "Create quick notes that immediately drop into the inbox :D",
+  },
+  {
+    feature: "Move Notes",
+    status: "👩‍💻",
+    notes:
+      "A move wizard that lets your transport pages to notebooks and sections",
+  },
+  {
     feature: "Search Notes",
     status: "👩‍💻",
     notes: "A modal to search pages and sections.",
@@ -150,7 +161,7 @@ const tableData = [
   },
   {
     feature: "Host on Github Pages",
-    status: "👩‍💻",
+    status: "✅",
     notes: "Open access to the internet via Github Pages!",
   },
   {
