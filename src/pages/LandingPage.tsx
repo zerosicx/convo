@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 const LandingPage = () => {
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center">
-      <div className="flex flex-row justify-between fixed top-0 h-16 items-center gap-2 w-full p-2">
+      <div className="flex flex-row justify-between fixed top-0 h-16 items-center gap-2 w-full px-4 py-2">
         <h2 className="text-3xl font-bold">Convo</h2>
         <div>
           <NavLink to="/app">
@@ -16,7 +16,7 @@ const LandingPage = () => {
       <div className="flex flex-row gap-[150px]">
         <div className="flex flex-col items-center justify-center gap-4 text-center">
           <h2 className="text-3xl font-italic">
-            Keep it clear, keep it simple.{" "}
+            Simple notes, seamless thoughts.
           </h2>
           <h1 className="text-4xl font-semibold">Welcome to Convo.</h1>
           <div className="flex flex-row gap-2">

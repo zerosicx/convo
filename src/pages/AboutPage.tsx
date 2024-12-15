@@ -1,5 +1,6 @@
 import creatorImage from "@/assets/Creator.png";
 import { Button } from "@/components/ui/Button";
+import { ScrollArea, ScrollBar } from "@/components/ui/ScrollArea";
 import {
   Table,
   TableBody,
@@ -13,8 +14,8 @@ import { NavLink } from "react-router-dom";
 
 const AboutPage = () => {
   return (
-    <div className="w-screen h-full flex flex-col items-center justify-center">
-      <div className="flex flex-row justify-between sticky top-0 h-16 items-center gap-2 w-full p-2 bg-white">
+    <ScrollArea className="w-screen h-screen overflow-hidden flex flex-col items-center justify-center">
+      <div className="flex flex-row justify-between sticky top-0 h-16 items-center gap-2 w-full px-4 py-2 bg-white">
         <NavLink to="/">
           <h2 className="text-3xl font-bold">Convo</h2>
         </NavLink>
@@ -89,7 +90,8 @@ const AboutPage = () => {
           </TableBody>
         </Table>
       </main>
-    </div>
+      <ScrollBar />
+    </ScrollArea>
   );
 };
 
