@@ -36,7 +36,7 @@ export interface Section {
  */
 export interface Page {
   id: PageId; // Unique identifier for the page
-  sectionId: SectionId; // Parent section reference
+  sectionId: SectionId | null; // Parent section reference
   parentPageId?: PageId | null; // Reference to the parent page (optional)
   title: string; // Page title
   data: any; // Main page content

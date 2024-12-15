@@ -1,16 +1,17 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import noteImage from "@/assets/writing.webp";
+import { Button } from "@/components/ui/Button";
 import NoteMeta from "@/components/ui/NoteMeta";
 import { usePageStore } from "@/lib/stores/page-store";
 import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
 import { BlockNoteView } from "@blocknote/mantine";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const NotePage = () => {
   const params = useParams();
-  const { getPageById, updatePageById } = usePageStore();
-
+  const { getPageById, updatePageById, createPage } = usePageStore();
+  const nav = useNavigate();
   const page = params.pageId ? getPageById(params.pageId) : null;
 
   const [initialContent, setInitialContent] = useState<
@@ -41,11 +42,17 @@ const NotePage = () => {
     }
   }, [editor, page?.id, updatePageById]);
 
+  const handleCreateQuickNote = () => {
+    const newPage = createPage(null, null, "Quick Note 📝");
+    nav(`inbox/page/${newPage.id}`);
+  };
+
   // Handle missing pageId
   if (!params.pageId) {
     return (
-      <div className="w-full h-screen items-center justify-center flex flex-col gap-10">
-        <h3 className="text-2xl font-italic">Why not write a new note?</h3>
+      <div className="w-full h-screen items-center justify-center flex flex-col gap-4">
+        <h3 className="text-2xl font-semibold">Why not write a new note?</h3>
+        <Button onClick={handleCreateQuickNote}>Quick Note 📝</Button>
         <img
           src={noteImage}
           width={350}

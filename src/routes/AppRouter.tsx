@@ -28,6 +28,12 @@ const AppRouter: React.FC = () => {
               <Route path="page/:pageId" element={<Outlet />} />
             </Route>
           </Route>
+          <Route path="inbox" element={<Outlet />}>
+            <Route path="page/:pageId" element={<Outlet />} />
+          </Route>
+          <Route path="pages" element={<Outlet />}>
+            <Route path="page/:pageId" element={<Outlet />} />
+          </Route>
         </Route>
 
         {/* Catch-All Route for 404 */}

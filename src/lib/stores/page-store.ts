@@ -6,7 +6,7 @@ import { NotebookId, PageId, SectionId } from "../definitions";
 // Define Page Type
 export interface Page {
   id: string;
-  sectionId: string;
+  sectionId: string | null;
   parentPageId?: string | null;
   title: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,8 +25,8 @@ interface PageStore {
   getPageList: () => Page[];
   getPageById: (id: string) => Page | undefined;
   createPage: (
-    notebookId: NotebookId,
-    sectionId: SectionId,
+    notebookId: NotebookId | null,
+    sectionId: SectionId | null,
     title: string,
     parentPageId?: PageId,
     data?: any
@@ -56,8 +56,8 @@ export const usePageStore = create<PageStore>()(
       getPageById: (id: string): Page | undefined => get().pages[id],
 
       createPage: (
-        notebookId: string,
-        sectionId: string,
+        notebookId: string | null,
+        sectionId: string | null,
         title: string,
         parentPageId?: PageId,
         data: any = ""
@@ -70,7 +70,10 @@ export const usePageStore = create<PageStore>()(
           title,
           data,
           parentPageId: null,
-          path: `${notebookId}/${sectionId}/${id}`,
+          path:
+            notebookId && sectionId
+              ? `${notebookId}/${sectionId}/${id}`
+              : `${id}`,
           level: 0,
           creationDate: new Date(),
           editedDate: new Date(),

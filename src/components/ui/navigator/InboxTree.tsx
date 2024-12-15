@@ -1,21 +1,12 @@
 import { toast } from "@/hooks/use-toast";
 import { Page } from "@/lib/definitions";
-import { useDndStore } from "@/lib/stores/dnd-store";
 import { usePageStore } from "@/lib/stores/page-store";
 import { cn } from "@/lib/utils";
-import { DragOverlay } from "@dnd-kit/core";
-import { restrictToParentElement } from "@dnd-kit/modifiers";
-import {
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import {
   ChevronDown,
   ChevronRight,
   EllipsisVertical,
   FolderInput,
-  GripVertical,
   Pencil,
   Plus,
   Trash2,
@@ -44,73 +35,58 @@ import {
 import { Input } from "../Input";
 import { Label } from "../Label";
 
-export const PageTree = ({ sectionId }: { sectionId: string }) => {
-  const { pages, orderedPages } = usePageStore();
-  const { activeId } = useDndStore();
+export const InboxTree = ({ all = false }: { all?: boolean }) => {
+  const { pages } = usePageStore();
 
-  // Modify this function to use orderedPages and retrieve the actual page objects
-  const getTopLevelPagesFromSection = () => {
-    return orderedPages
-      .map((pageId) => pages[pageId]) // Map the orderedPage IDs to the corresponding Page objects
-      .filter(
-        (page) => page && page.level === 0 && page.sectionId === sectionId
-      ); // Filter based on the sectionId and level
+  const getInboxPagesSortedByCreationDate = () => {
+    return Object.values(pages)
+      .filter((page) => page.sectionId === null)
+      .filter((page) => page.level === 0)
+      .sort(
+        (a, b) =>
+          new Date(a.creationDate).getTime() -
+          new Date(b.creationDate).getTime()
+      );
+  };
+
+  const getAllPagesSortedByCreationDate = () => {
+    return Object.values(pages)
+      .filter((page) => page.level === 0)
+      .sort(
+        (a, b) =>
+          new Date(a.creationDate).getTime() -
+          new Date(b.creationDate).getTime()
+      );
   };
 
   return (
-    <div className="mt-4" style={{ maxWidth: "inherit", width: "inherit" }}>
-      <SortableContext
-        items={orderedPages}
-        strategy={verticalListSortingStrategy}
-      >
-        {getTopLevelPagesFromSection().map((page, index) => {
-          return <PageItem currentPage={page} key={index} />;
-        })}
-        <DragOverlay modifiers={[restrictToParentElement]}>
-          {activeId && <PageItem currentPage={pages[activeId]} />}
-        </DragOverlay>
-      </SortableContext>
+    <div className="mb-4" style={{ maxWidth: "inherit", width: "inherit" }}>
+      {all
+        ? getAllPagesSortedByCreationDate().map((page, index) => (
+            <InboxTreeItem currentPage={page} key={index} all />
+          ))
+        : getInboxPagesSortedByCreationDate().map((page, index) => (
+            <InboxTreeItem currentPage={page} key={index} />
+          ))}
     </div>
   );
 };
 
-export const PageItem = ({ currentPage }: { currentPage: Page }) => {
+export const InboxTreeItem = ({
+  currentPage,
+  all = false,
+}: {
+  currentPage: Page;
+  all?: boolean;
+}) => {
   const [open, setOpen] = useState<boolean>(false);
-  // Get all the pages under the current level
-  const params = useParams();
-  const sectionId = params.sectionId;
+  const [editing, setEditing] = useState<boolean>(false);
   const { getPageList, updatePageById, removePage } = usePageStore();
   const pages = getPageList();
+  const { createPage } = usePageStore();
   const [creatingPage, setCreatingPage] = useState(false);
   const pageInputRef = useRef<ElementRef<"input">>(null);
-  const { createPage } = usePageStore();
-  const [editing, setEditing] = useState<boolean>(false);
-
-  // Use regex to match the notebook id; temporary while UUID4 is not implemented
-  const getNotebookId = (path: string) => {
-    // TODO: use this regex expression when UUID is implemented
-    return path.split("/")[0];
-  };
-
-  const childPages = (() => {
-    return Object.values(pages).filter(
-      (p) => p.parentPageId === currentPage.id
-    );
-  })();
-
-  const handleCreateNestedPage = (event: React.KeyboardEvent) => {
-    // Do something
-    event.stopPropagation();
-    if (event.key === "Enter") {
-      createPage(
-        params.notebookId ?? "",
-        params.sectionId ?? "",
-        pageInputRef?.current?.value ?? "Untitled Page",
-        currentPage.id
-      );
-      setCreatingPage(false);
-    }
-  };
+  const params = useParams();
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -123,7 +99,6 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Update the section name
     updatePageById(currentPage.id, {
       title: e.target.value,
     });
@@ -131,50 +106,46 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
 
   const handleDeleteClick = () => {
     removePage(currentPage.id);
-    // Delete all related pages
-    removePage(currentPage.id);
   };
 
-  // Sortable config
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    // transform,
-    // transition
-  } = useSortable({ id: currentPage.id });
+  const childPages = (() => {
+    return Object.values(pages).filter(
+      (p) => p.parentPageId === currentPage.id
+    );
+  })();
 
-  // TODO: Avoiding transform due to dnd-kit DragOverlay issue.
-  // const transformStyle = {
-  //     transform: CSS.Transform.toString(transform),
-  //     transition
-  // };
+  const handleCreateNestedPage = (event: React.KeyboardEvent) => {
+    event.stopPropagation();
+    if (event.key === "Enter") {
+      console.log("Creating a nested page gang gang");
 
-  // Level will be a multiplier for nesting
+      createPage(
+        null,
+        null,
+        pageInputRef?.current?.value ?? "Untitled Page",
+        currentPage.id
+      );
+      setCreatingPage(false);
+    }
+  };
+
   return (
-    <div
-      style={{ marginLeft: `${4 * currentPage.level}px` }}
-      ref={setNodeRef}
-      {...attributes}
-    >
+    <div style={{ marginLeft: `${4 * currentPage.level}px` }}>
       <div
         className={cn(
-          "flex flex-row justify-between  items-center text-sm relative mx-2 rounded-md h-10",
+          "flex flex-row justify-between items-center text-sm relative mx-2 rounded-md h-10",
           params.pageId === currentPage.id && "bg-zinc-200/80"
         )}
       >
         <NavLink
-          to={`notebook/${getNotebookId(
-            currentPage.path
-          )}/section/${sectionId}/page/${currentPage.id}`}
+          to={
+            all
+              ? `pages/page/${currentPage.id}`
+              : `inbox/page/${currentPage.id}`
+          }
           className="w-full"
         >
           <div className="flex flex-row items-center pl-2 gap-1">
-            <GripVertical
-              className="w-4 h-4 text-transparent hover:text-zinc-800 hover:bg-muted"
-              {...listeners}
-            />
-
             <div className={cn("text-left text-primary w-full")}>
               {editing ? (
                 <Input
@@ -188,9 +159,7 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
               ) : (
                 <h4
                   className="truncate max-w-36 font-medium"
-                  style={{
-                    maxWidth: `${144 - currentPage.level * 12}px`,
-                  }}
+                  style={{ maxWidth: `${144 - currentPage.level * 12}px` }}
                   title={currentPage.title}
                 >
                   {currentPage.title}
@@ -223,7 +192,7 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
             </Button>
           )}
           <DropdownMenu>
-            <DropdownMenuTrigger className="bg-transparent p-1 outline-none focus:outline-none border-0 focus-visible:outline-none">
+            <DropdownMenuTrigger className="bg-transparent p-1">
               <EllipsisVertical className="w-4 h-4 text-zinc-800" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="px-2">
@@ -239,8 +208,7 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
                 <span className="text-zinc-800">Add nested page</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setEditing(true)}>
-                <Pencil className="w-4 h-4 text-zinc-800" />{" "}
-                <span className="text-zinc-800">Rename</span>
+                <Pencil className="w-4 h-4 text-zinc-800" /> Rename
               </DropdownMenuItem>
               <AlertDialog>
                 <AlertDialogTrigger className="bg-transparent rounded-sm text-sm flex flex-row items-center  w-full py-1.5 px-2 gap-2 font-normal outline-none border-0 focus:outline-none focus-visible:outline-none focus:bg-accent focus:text-accent-foreground hover:bg-accent hover:text-accent-foreground">
@@ -285,7 +253,7 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
       </div>
       {open &&
         childPages.map((child, index) => {
-          return <PageItem currentPage={child} key={index} />;
+          return <InboxTreeItem currentPage={child} key={index} />;
         })}
       {open && creatingPage && (
         <div
@@ -306,3 +274,5 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
     </div>
   );
 };
+
+export default InboxTree;

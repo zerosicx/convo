@@ -14,19 +14,22 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import {
+  BookHeart,
   ChevronsRight,
   Command,
   FileIcon,
+  Inbox,
   Plus,
   Search,
   Settings,
 } from "lucide-react";
 import { ElementRef, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button } from "./Button";
 import { Input } from "./Input";
 import { Label } from "./Label";
 import { ScrollArea, ScrollBar } from "./ScrollArea";
+import InboxTree from "./navigator/InboxTree";
 import NotebookTree from "./navigator/NotebookTree";
 import { PageTree } from "./navigator/PageTree";
 
@@ -107,6 +110,7 @@ export const Navigator = () => {
       <div className="flex flex-row gap-0">
         <NavBar />
         <PageBar />
+        <InboxBar />
       </div>
     </DndContext>
   );
@@ -114,6 +118,10 @@ export const Navigator = () => {
 
 const NavBar = () => {
   const nav = useNavigate();
+  const location = useLocation();
+
+  const isInbox = location.pathname.includes("/inbox");
+  const isAllPages = location.pathname.includes("/pages");
 
   return (
     <Sidebar minWidth={250}>
@@ -159,6 +167,36 @@ const NavBar = () => {
             <span>{"+ /"}</span>
           </div>
         </div>
+      </div>
+
+      <div className="mx-3 flex flex-col gap-0">
+        <Label className="text-xs py-2">GENERAL</Label>
+        <NavLink to="pages">
+          <div
+            className={cn(
+              "p-1 hover:bg-zinc-700 flex flex-row items-center justify-between rounded-md",
+              isAllPages && "bg-brand"
+            )}
+          >
+            <Label className=" text-sm flex flex-row items-center justify-between gap-2">
+              <BookHeart className="w-4 h-4" />
+              All Notes
+            </Label>
+          </div>
+        </NavLink>
+        <NavLink to="inbox">
+          <div
+            className={cn(
+              "p-1 hover:bg-zinc-700 flex flex-row items-center justify-between rounded-md",
+              isInbox && "bg-brand"
+            )}
+          >
+            <Label className=" text-sm flex flex-row items-center justify-between gap-2">
+              <Inbox className="w-4 h-4" />
+              Inbox
+            </Label>
+          </div>
+        </NavLink>
       </div>
       <NotebookTree />
     </Sidebar>
@@ -211,6 +249,76 @@ const PageBar = () => {
         style={{ maxWidth: "inherit", width: "inherit" }}
       >
         <PageTree sectionId={sectionId} />
+        {creatingPage && (
+          <div className="w-full px-2">
+            <Input
+              autoFocus
+              ref={pageInputRef}
+              placeholder={"Untitled Page"}
+              startIcon={FileIcon}
+              onKeyDown={handleCreatePage}
+              onBlur={() => setCreatingPage(false)}
+              className="text-zinc-800 border-0 outline-none focus:outline-none shadow-none"
+            />
+          </div>
+        )}
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
+    </Sidebar>
+  );
+};
+
+const InboxBar = () => {
+  const params = useParams();
+  const [creatingPage, setCreatingPage] = useState(false);
+  const pageInputRef = useRef<ElementRef<"input">>(null);
+  const { createPage } = usePageStore();
+  const location = useLocation();
+
+  const isAllPages = location.pathname.includes("/pages");
+  const isInbox = location.pathname.includes("/inbox");
+
+  if (!isAllPages && !isInbox) {
+    return;
+  }
+
+  const handleCreatePage = (event: React.KeyboardEvent) => {
+    // Do something
+    event.stopPropagation();
+    if (event.key === "Enter") {
+      console.log(pageInputRef?.current?.value);
+      createPage(
+        params?.notebookId ?? "",
+        null,
+        pageInputRef?.current?.value || "Untitled Page"
+      );
+      setCreatingPage(false);
+    }
+  };
+
+  return (
+    <Sidebar className="bg-zinc-100" minWidth={250}>
+      <div className="p-4 pb-0 flex flex-row justify-between items-center">
+        <Label className="text-zinc-800 text-sm">
+          {isAllPages ? "All" : "Inbox (Uncategorised)"}
+          <span> Pages </span>
+        </Label>
+        <Button
+          size="icon"
+          variant="ghostLight"
+          onClick={() => setCreatingPage(true)}
+        >
+          <Plus className="text-zinc-800" />
+        </Button>
+      </div>
+      <ScrollArea
+        className="h-full"
+        style={{ maxWidth: "inherit", width: "inherit" }}
+      >
+        <Label className="text-xs text-zinc-500 mx-4">
+          SORTED BY CREATION DATE
+        </Label>
+        <InboxTree all={isAllPages} />
         {creatingPage && (
           <div className="w-full px-2">
             <Input
