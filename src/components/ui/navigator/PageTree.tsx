@@ -58,7 +58,7 @@ export const PageTree = ({ sectionId }: { sectionId: string }) => {
   };
 
   return (
-    <div className="mt-4" style={{ maxWidth: "inherit", width: "inherit" }}>
+    <div className="mb-4" style={{ maxWidth: "inherit", width: "inherit" }}>
       <SortableContext
         items={orderedPages}
         strategy={verticalListSortingStrategy}
