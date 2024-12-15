@@ -62,7 +62,7 @@ const NoteMeta = () => {
             }
             className="hover:text-brand hover:font-medium"
           >
-            {section?.name || "Inbox "}
+            {section?.name ? ` ${section?.name} ` : "Inbox "}
           </NavLink>
           {pagePath.map((page, index) => (
             <NavLink
