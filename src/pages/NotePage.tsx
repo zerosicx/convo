@@ -57,7 +57,7 @@ const NotePage = () => {
   }
 
   return (
-    <div>
+    <div className="w-full">
       <NoteMeta />
       <main className="w-full h-full">
         {editor && (

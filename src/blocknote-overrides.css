@@ -17,7 +17,7 @@
     font-size: large;
   }
 
-  font-size: small;
+  font-size: medium;
 }
 
 /* Base theme */
@@ -65,8 +65,13 @@
   --bn-colors-highlights-pink-background: #f4dfeb;
   --bn-border-radius: 6px;
 
-  & input {
-    background-color: #fafafa;
+  & .bn-inline-content > code {
+    background-color: #dbdbdb;
+    font-size: small;
+  }
+
+  & pre > code {
+    background-color: transparent;
   }
 }
 
