@@ -414,7 +414,7 @@ const Sidebar = ({
       {...rest}
       ref={sidebarRef}
       className={cn(
-        "relative min-w-40 h-screen bg-brand-background flex flex-col gap-4 text-primary-foreground drop-shadow-md",
+        "relative min-w-40 h-screen bg-brand-background flex flex-col gap-4 text-primary-foreground drop-shadow-md z-20",
         className
       )}
       style={{

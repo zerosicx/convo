@@ -21,7 +21,7 @@
 }
 
 /* Base theme */
-.bn-container[data-theming-css-variables-demo][data-color-scheme] {
+.bn-container[data-color-scheme="light"] {
   --bn-colors-editor-background: #fafafa;
   --bn-colors-editor-text: "var(--text-primary)";
 }
