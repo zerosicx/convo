@@ -1,3 +1,4 @@
+import convoLogo from "@/assets/convo-logo-192.png";
 import creatorImage from "@/assets/Creator.png";
 import { Button } from "@/components/ui/Button";
 import { ScrollArea, ScrollBar } from "@/components/ui/ScrollArea";
@@ -14,10 +15,11 @@ import { NavLink } from "react-router-dom";
 
 const AboutPage = () => {
   return (
-    <ScrollArea className="w-screen h-screen overflow-hidden flex flex-col items-center justify-center">
-      <div className="flex flex-row justify-between sticky top-0 h-16 items-center gap-2 w-full px-4 py-2 bg-white">
-        <NavLink to="/">
-          <h2 className="text-3xl font-bold">Convo</h2>
+    <ScrollArea className="w-screen h-screen overflow-hidden flex flex-col items-center justify-center bg-zinc-50">
+      <div className="flex flex-row justify-between sticky top-0 h-16 items-center gap-2 w-full px-4 py-2 bg-brand-background z-20">
+        <NavLink to="/" className="flex flex-row gap-0">
+          <img src={convoLogo} className="w-10" />
+          <h2 className="text-3xl font-bold">onvo</h2>
         </NavLink>
         <div>
           <NavLink to="/app">
@@ -27,10 +29,10 @@ const AboutPage = () => {
       </div>
 
       <main className="flex flex-col items-center gap-8 py-8">
-        <h1 className="text-5xl font-semibold gamja-flower">
+        <h1 className="text-5xl font-semibold gamja-flower px-4">
           Hey, thanks for stopping by.
         </h1>
-        <div className="flex flex-row justify-center items-center px-20 bg-red-200 flex-wrap py-8">
+        <div className="flex flex-row justify-center items-center px-20 bg-zinc-200 flex-wrap py-8">
           <div className="flex flex-col items-center sm:w-[80%] md:w-[40%]">
             <h1 className="text-3xl font-semibold gamja-flower">
               Author's Note
@@ -64,7 +66,7 @@ const AboutPage = () => {
         </div>
 
         <h2 className="text-xl font-medium">Roadmap 🚀</h2>
-        <p className="text-sm text-muted-foreground ">
+        <p className="text-sm text-zinc-800 px-4">
           This might not be the perfectly ordered roadmap, but it's a list of
           features I plan to implement... I can be a bit sporadic.
         </p>

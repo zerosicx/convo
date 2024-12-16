@@ -21,6 +21,7 @@ const buttonVariants = cva(
           "hover:bg-accent/20 bg-transparent focus-visible:outline-none focus:outline-none hover:bg-zinc-700 active:bg-zinc-800 border-0",
         ghostLight: "hover:bg-zinc-200 active:bg-zinc-300 text-zinc-800",
         link: "text-primary underline-offset-4 hover:underline",
+        brand: "bg-brand text-primary-foreground",
       },
       size: {
         default: "h-9 px-4 py-2",
