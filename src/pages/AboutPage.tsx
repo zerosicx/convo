@@ -16,7 +16,7 @@ import { NavLink } from "react-router-dom";
 const AboutPage = () => {
   return (
     <ScrollArea className="w-screen h-screen overflow-hidden flex flex-col items-center justify-center bg-zinc-50">
-      <div className="flex flex-row justify-between sticky top-0 h-16 items-center gap-2 w-full px-4 py-2 bg-brand-background z-20">
+      <div className="flex flex-row justify-between sticky top-0 h-16 items-center gap-2 w-full px-4 py-2 bg-brand-background z-20 text-primary-foreground">
         <NavLink to="/" className="flex flex-row gap-0">
           <img src={convoLogo} className="w-10" />
           <h2 className="text-3xl font-bold">onvo</h2>
