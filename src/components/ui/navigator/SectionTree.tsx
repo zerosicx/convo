@@ -16,7 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "../alert-dialog";
+} from "../AlertDialog";
 import { Button } from "../Button";
 import {
   DropdownMenu,
@@ -24,7 +24,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../dropdown-menu";
+} from "../DropdownMenu";
 import { Input } from "../Input";
 import { Label } from "../Label";
 
