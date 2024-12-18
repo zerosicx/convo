@@ -203,6 +203,7 @@ const PageBar = () => {
         <Button
           size="icon"
           variant="ghost"
+          className="hover:bg-zinc-300"
           onClick={() => setCreatingPage(true)}
         >
           <Plus className="text-zinc-800" />
