@@ -153,14 +153,15 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
   // Level will be a multiplier for nesting
   return (
     <div
-      style={{ marginLeft: `${4 * currentPage.level}px` }}
+      style={{ marginLeft: `${12 * currentPage.level}px` }}
       ref={setNodeRef}
       {...attributes}
     >
       <div
         className={cn(
-          "flex flex-row justify-between  items-center text-sm relative mx-2 rounded-md h-10",
-          params.pageId === currentPage.id && "bg-zinc-200/80"
+          "flex flex-row justify-between items-center text-sm relative mx-2 rounded-md h-10",
+          params.pageId === currentPage.id && "bg-zinc-200/80",
+          currentPage.level > 0 && "border-l-2 border-brand rounded-l-none"
         )}
       >
         <NavLink
@@ -169,9 +170,9 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
           )}/section/${sectionId}/page/${currentPage.id}`}
           className="w-full"
         >
-          <div className="flex flex-row items-center pl-2 gap-1">
+          <div className="flex flex-row items-center pl-1 gap-1">
             <GripVertical
-              className="w-4 h-4 text-transparent hover:text-zinc-800 hover:bg-muted"
+              className="w-5 h-5 text-transparent hover:text-zinc-800 hover:bg-muted"
               {...listeners}
             />
 
@@ -223,7 +224,7 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
             </Button>
           )}
           <DropdownMenu>
-            <DropdownMenuTrigger className="bg-transparent p-1 outline-none focus:outline-none border-0 focus-visible:outline-none">
+            <DropdownMenuTrigger className="bg-transparent p-0 outline-none focus:outline-none border-0 focus-visible:outline-none">
               <EllipsisVertical className="w-4 h-4 text-zinc-800" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="px-2">
