@@ -4,16 +4,16 @@ import { useSectionStore } from "@/lib/stores/section-store";
 import { useSearch } from "@/lib/stores/use-search";
 import { cn, getOs } from "@/lib/utils";
 import {
-  closestCenter,
   DndContext,
   DragEndEvent,
   DragStartEvent,
   KeyboardSensor,
   PointerSensor,
+  pointerWithin,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import {
   BookHeart,
   ChevronsRight,
@@ -36,8 +36,7 @@ import { PageTree } from "./navigator/PageTree";
 
 export const Navigator = () => {
   const { setActiveId } = useDndStore();
-  const { orderedPages, updatePageList, getPageById, updatePageById } =
-    usePageStore();
+  const { reorderPages } = usePageStore();
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -53,58 +52,18 @@ export const Navigator = () => {
   const handleDragEnd = (event: DragEndEvent) => {
     // Do something
     const { active, over } = event;
-    console.log(`activeId: ${active.id}, overId: ${over?.id}`);
+    console.log(`overId: ${over?.id}`);
 
-    if (active.id !== over?.id) {
-      const newPages = (() => {
-        const oldIndex = orderedPages.indexOf(active.id as string);
-        const newIndex = orderedPages.indexOf(over?.id as string);
-
-        return arrayMove(orderedPages, oldIndex, newIndex);
-      })();
-      updatePageList(newPages);
-
-      // Get the parents of each item
-      const activePage = getPageById(active.id as string);
-      const overPage = getPageById(over?.id as string);
-
-      if (
-        activePage?.level === overPage?.level &&
-        activePage?.parentPageId !== overPage?.parentPageId
-      ) {
-        // Update the active page's parent to be the same as over page, only if they're the same level.
-        console.log(
-          `Updating ${activePage?.title}'s parent to ${activePage?.parentPageId}'s parent. `
-        );
-        updatePageById(activePage?.id as string, {
-          parentPageId: overPage?.parentPageId,
-        });
-      }
-
-      // If the active page is more nested, set active's parent to the over item.
-      else if ((activePage?.level || 0) > (overPage?.level || 0)) {
-        updatePageById(activePage?.id as string, {
-          parentPageId: overPage?.id,
-        });
-      }
-
-      // If the active page is less nested, make it nested to the same parent as the over page
-      else if ((activePage?.level || 0) < (overPage?.level || 0)) {
-        updatePageById(activePage?.id as string, {
-          parentPageId: overPage?.parentPageId,
-          level: overPage?.level,
-        });
-      }
+    if (active.id && active.id !== over?.id) {
+      reorderPages(active.id as string, (over?.id as string) || null);
       setActiveId("");
-    } else {
-      updatePageById(active.id as string, { parentPageId: null, level: 0 });
     }
   };
 
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCenter}
+      collisionDetection={pointerWithin}
       onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
     >

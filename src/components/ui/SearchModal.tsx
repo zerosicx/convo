@@ -8,10 +8,10 @@ import { Label } from "@radix-ui/react-label";
 import { BookHeart, Search } from "lucide-react";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Badge } from "./badge";
-import { Dialog, DialogContent, DialogHeader } from "./dialog";
+import { Badge } from "./Badge";
+import { Dialog, DialogContent, DialogHeader } from "./Dialog";
 import { Input } from "./Input";
-import { Separator } from "./separator";
+import { Separator } from "./Separator";
 
 const SearchModal = () => {
   const { searchMatchString } = usePageStore();

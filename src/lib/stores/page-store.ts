@@ -1,3 +1,4 @@
+import { arrayMove } from "@dnd-kit/sortable";
 import uuid4 from "uuid4";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -24,6 +25,7 @@ interface PageStore {
   clearPages: () => void;
 
   // Utility Functions
+  reorderPages: (activeId: string, overId: string | null) => void;
   searchMatchString: (str: string) => Page[];
 }
 
@@ -152,6 +154,85 @@ export const usePageStore = create<PageStore>()(
         }),
 
       clearPages: () => set({ pages: {}, orderedPages: [] }),
+
+      reorderPages: (activeId: string, overId: string | null) => {
+        const { updatePageById } = get();
+
+        console.log(`Inside reorder overId:  ${overId}`);
+
+        const reorder = () => {
+          console.log(
+            `Reordering: activeId: ${activePage.title}, overId: ${overPage.title}`
+          );
+          // Get the pages and use ArrayMove to swap them
+          const newPages = (() => {
+            const oldIndex = get().orderedPages.indexOf(activeId as string);
+            const newIndex = get().orderedPages.indexOf(overId as string);
+
+            return arrayMove(get().orderedPages, oldIndex, newIndex);
+          })();
+
+          // Update the page list order
+          get().updatePageList(newPages);
+        };
+
+        if (!overId) {
+          // Otherwise if it's dragging over itself
+          console.log(`Triggering else branch`);
+          updatePageById(activeId as string, {
+            parentPageId: null,
+            level: 0,
+          });
+          return;
+        }
+
+        // Parent-Child handling logic
+        const activePage = get().pages[activeId];
+        const overPage = get().pages[overId];
+
+        if (overPage.parentPageId !== activePage.id) reorder();
+
+        /**
+         * [1] If the page levels are the same AND their parent IDs are not the same,
+         * change activePage's parent to overPage's parent and update the page path.
+         * We know that they're definitely in the same Notebook and Section.
+         */
+        if (
+          activePage.level === overPage.level &&
+          activePage.parentPageId !== overPage.parentPageId
+        ) {
+          const newPath = overPage.path.replace(/[^/]+$/, activePage.id);
+          updatePageById(activePage.id, {
+            parentPageId: overPage.parentPageId,
+            path: newPath,
+          });
+        } else if (activePage.level > overPage.level) {
+          /**
+           * If the active page is MORE nested, overPage becomes its parent.
+           * Obviously they won't have the same parentId.
+           */
+          const newPath = overPage.path + "/" + activePage.id;
+          updatePageById(activePage.id, {
+            parentPageId: overPage.id,
+            path: newPath,
+          });
+        } else if (
+          /**
+           * Finally, if the active page is LESS nested, nest it to the same
+           * parent as the overPage if activePage is NOT its parent.
+           * Make its level the same.
+           */
+          activePage.level < overPage.level &&
+          activePage.id !== overPage.parentPageId
+        ) {
+          const newPath = overPage.path.replace(/[^/]+$/, activeId);
+          updatePageById(activePage.id, {
+            parentPageId: overPage.parentPageId,
+            level: overPage.level,
+            path: newPath,
+          });
+        }
+      },
 
       searchMatchString: (str: string) => {
         const allPages = get().pages;

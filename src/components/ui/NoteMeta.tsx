@@ -74,7 +74,7 @@ const NoteMeta = () => {
               key={index}
               className="hover:text-brand hover:font-medium"
             >
-              / {page?.title}
+              {` / ${page?.title}`}
             </NavLink>
           ))}
         </p>
