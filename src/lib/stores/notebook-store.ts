@@ -1,16 +1,7 @@
 import uuid4 from "uuid4";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-// Notebook Type Definition
-export interface Notebook {
-  id: string; // Unique identifier for the notebook
-  name: string; // Title of the notebook
-  user: string; // Associated user ID
-  description: string; // Summary or description of the notebook
-  colour: string; // Notebook's assigned colour (hex code)
-  sections: string[]; // Array of associated section IDs
-}
+import { Notebook } from "../definitions";
 
 // Zustand Store Type Definition
 interface NotebookStore {
