@@ -1,22 +1,7 @@
 import uuid4 from "uuid4";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { NotebookId, PageId, SectionId } from "../definitions";
-
-// Define Page Type
-export interface Page {
-  id: string;
-  sectionId: string | null;
-  parentPageId?: string | null;
-  title: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
-  path: string;
-  level: number;
-  creationDate: Date;
-  editedDate: Date;
-  archived: boolean;
-}
+import { NotebookId, Page, PageId, SectionId } from "../definitions";
 
 // Define Zustand State
 interface PageStore {
@@ -37,7 +22,9 @@ interface PageStore {
   removePage: (id: string) => void;
   removeBySection: (sectionId: SectionId) => void;
   clearPages: () => void;
-  repositionPage: (pageId: PageId, index: number) => void; // New function to reposition page
+
+  // Utility Functions
+  searchMatchString: (str: string) => Page[];
 }
 
 // Create Zustand Store with Explicit Types
@@ -166,17 +153,24 @@ export const usePageStore = create<PageStore>()(
 
       clearPages: () => set({ pages: {}, orderedPages: [] }),
 
-      // Reposition a page by moving it to a new index
-      repositionPage: (pageId: PageId, index: number) => {
-        set((state) => {
-          const orderedPages = [...state.orderedPages];
-          // Remove the page from its current position
-          orderedPages.splice(orderedPages.indexOf(pageId), 1);
-          // Insert the page at the new index
-          orderedPages.splice(index, 0, pageId);
+      searchMatchString: (str: string) => {
+        const allPages = get().pages;
 
-          return { orderedPages };
-        });
+        if (!str || str === "") {
+          return Object.values(allPages)
+            .sort(
+              (a, b) =>
+                new Date(b.editedDate).getTime() -
+                new Date(a.editedDate).getTime()
+            )
+            .slice(0, 4);
+        }
+
+        const results = Object.values(allPages).filter((page) =>
+          page.title.toLocaleLowerCase().includes(str.toLocaleLowerCase())
+        );
+
+        return results;
       },
     }),
     {

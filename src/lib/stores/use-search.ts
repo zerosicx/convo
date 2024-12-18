@@ -6,7 +6,7 @@ export interface SearchModal {
   onClose: () => void;
 }
 
-export const useSearchModalStore = create<SearchModal>((set) => ({
+export const useSearch = create<SearchModal>((set) => ({
   open: false,
   setOpen: (open) => set({ open }),
   onClose: () => set({ open: false }),

@@ -1,16 +1,8 @@
 import uuid4 from "uuid4";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { Section } from "../definitions";
 import { getRandomRedPinkHex } from "../utils";
-
-// Section Type Definition
-export interface Section {
-  id: string; // Unique identifier for the section
-  name: string; // Title of the section
-  user: string; // Associated user ID
-  notebookId: string; // Parent notebook reference
-  color: string; // Section's assigned colour (hex code)
-}
 
 // Zustand Store Type Definition
 interface SectionStore {

@@ -1,6 +1,7 @@
 import { useDndStore } from "@/lib/stores/dnd-store";
 import { usePageStore } from "@/lib/stores/page-store";
 import { useSectionStore } from "@/lib/stores/section-store";
+import { useSearch } from "@/lib/stores/use-search";
 import { cn, getOs } from "@/lib/utils";
 import {
   closestCenter,
@@ -117,6 +118,7 @@ export const Navigator = () => {
 };
 
 const NavBar = () => {
+  const { setOpen } = useSearch();
   const nav = useNavigate();
   const location = useLocation();
 
@@ -135,7 +137,10 @@ const NavBar = () => {
         </h2>
       </header>
       <div className="mx-3 flex flex-col gap-0">
-        <div className="p-1 hover:bg-zinc-700 flex flex-row items-center justify-between rounded-md">
+        <div
+          className="p-1 hover:bg-zinc-700 flex flex-row items-center justify-between rounded-md"
+          onClick={() => setOpen(true)}
+        >
           <Label className=" text-xs flex flex-row items-center justify-between gap-2">
             <Search className="w-3.5 h-3.5" />
             Search
