@@ -1,16 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { Id } from "convex/_generated/dataModel";
+
 // Type Aliases for ID References
-export type UserId = string;
-export type NotebookId = string;
-export type SectionId = string;
-export type PageId = string;
+export type UserId = Id<"users">;
+export type NotebookId = Id<"notebooks">;
+export type SectionId = Id<"sections">;
+export type PageId = Id<"pages">;
 
 /**
  * Interface for Notebook
  * Represents a collection of sections.
  */
 export interface Notebook {
-  id: NotebookId; // Unique identifier for the notebook
+  _id: NotebookId; // Unique identifier for the notebook
   name: string; // Title of the notebook
   user: UserId; // Associated user ID
   description: string; // Summary or description of the notebook
@@ -23,7 +26,7 @@ export interface Notebook {
  * Belongs to a specific notebook.
  */
 export interface Section {
-  id: SectionId; // Unique identifier for the section
+  _id: SectionId; // Unique identifier for the section
   name: string; // Title of the section
   user: UserId; // Associated user ID
   notebookId: NotebookId; // Parent notebook reference
@@ -35,7 +38,7 @@ export interface Section {
  * Supports hierarchical nesting through parentPageId.
  */
 export interface Page {
-  id: PageId; // Unique identifier for the page
+  _id: PageId; // Unique identifier for the page
   sectionId: SectionId | null; // Parent section reference
   parentPageId?: PageId | null; // Reference to the parent page (optional)
   title: string; // Page title
