@@ -11,9 +11,9 @@ interface SectionStore {
   // CRUD Functions
   getSectionById: (id: string) => Section | undefined;
   createSection: (
+    userId: string,
     notebookId: string,
     name: string,
-    user: string,
     color?: string
   ) => Section;
   updateSection: (section: Section) => void;
@@ -36,23 +36,23 @@ export const useSectionStore = create<SectionStore>()(
         (get() as SectionStore).sections[id],
 
       createSection: (
+        userId: string,
         notebookId: string,
         name: string,
-        user: string,
-        color: string | undefined
+        color?: string
       ) => {
-        const id = "section-" + uuid4();
-        if (!color) color = getRandomRedPinkHex();
+        const _id = "section-" + uuid4();
+        const sectionColor = color ?? getRandomRedPinkHex();
         const newSection: Section = {
-          id,
+          _id,
           name,
-          user,
+          user: userId,
           notebookId,
-          color,
+          color: sectionColor,
         };
 
         set((state) => ({
-          sections: { ...state.sections, [id]: newSection },
+          sections: { ...state.sections, [_id]: newSection },
         }));
 
         return newSection;
@@ -61,7 +61,7 @@ export const useSectionStore = create<SectionStore>()(
       // Update an entire section
       updateSection: (section: Section) =>
         set((state: SectionStore) => ({
-          sections: { ...state.sections, [section.id]: section },
+          sections: { ...state.sections, [section._id]: section },
         })),
 
       // Update a section by ID with partial data
@@ -89,7 +89,7 @@ export const useSectionStore = create<SectionStore>()(
       // Add a new section
       addSection: (section: Section) =>
         set((state: SectionStore) => ({
-          sections: { ...state.sections, [section.id]: section },
+          sections: { ...state.sections, [section._id]: section },
         })),
 
       // Remove a section by ID

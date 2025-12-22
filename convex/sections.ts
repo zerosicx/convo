@@ -1,62 +1,176 @@
 import { v } from "convex/values";
-import uuid4 from "uuid4";
 import { mutation, query } from "./_generated/server";
+import { getAuthenticatedUserId } from "./utils/auth";
 
+/**
+ * Get all sections for the authenticated user
+ */
 export const getAllSections = query({
-  args: { user: v.id("users") },
-  handler: async (ctx, args) => {
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthenticatedUserId(ctx);
     const sections = await ctx.db
       .query("sections")
-      .withIndex("by_user", (q) => q.eq("user", args.user));
+      .withIndex("by_user", (q) => q.eq("user", userId))
+      .collect();
     return sections;
   },
 });
 
-export const createSection = mutation({
-  args: {
-    name: v.string(),
-    user: v.id("users"),
-    notebookId: v.id("notebooks"),
-    color: v.string(),
-  },
+/**
+ * Get sections by notebook (only if owned by authenticated user)
+ */
+export const getSectionsByNotebook = query({
+  args: { notebookId: v.string() },
   handler: async (ctx, args) => {
-    const id = uuid4();
-    const newSection = {
-      _id: id,
-      name: args.name,
-      user: args.user,
-      notebookId: args.notebookId,
-      color: args.color,
-    };
-    await ctx.db.insert("sections", newSection);
-    return newSection;
+    const userId = await getAuthenticatedUserId(ctx);
+    const sections = await ctx.db
+      .query("sections")
+      .withIndex("by_notebook", (q) => q.eq("notebookId", args.notebookId))
+      .collect();
+
+    // Filter to only return sections owned by authenticated user
+    return sections.filter((s) => s.user === userId);
   },
 });
 
-export const updateSectionById = mutation({
+/**
+ * Get a section by its client-generated ID (only if owned by authenticated user)
+ */
+export const getSectionByClientId = query({
+  args: { clientId: v.string() },
+  handler: async (ctx, args) => {
+    const userId = await getAuthenticatedUserId(ctx);
+    const section = await ctx.db
+      .query("sections")
+      .withIndex("by_clientId", (q) => q.eq("clientId", args.clientId))
+      .unique();
+
+    // Verify ownership
+    if (section && section.user !== userId) {
+      return null;
+    }
+    return section;
+  },
+});
+
+/**
+ * Create a new section for the authenticated user
+ */
+export const createSection = mutation({
   args: {
-    id: v.id("sections"),
+    clientId: v.string(),
+    name: v.string(),
+    notebookId: v.string(),
+    color: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthenticatedUserId(ctx);
+
+    const newSection = {
+      clientId: args.clientId,
+      name: args.name,
+      user: userId,
+      notebookId: args.notebookId,
+      color: args.color,
+    };
+
+    const id = await ctx.db.insert("sections", newSection);
+    return { ...newSection, _id: id };
+  },
+});
+
+/**
+ * Update a section by its client-generated ID (only if owned by authenticated user)
+ */
+export const updateSectionByClientId = mutation({
+  args: {
+    clientId: v.string(),
     data: v.object({
       name: v.optional(v.string()),
       color: v.optional(v.string()),
     }),
   },
   handler: async (ctx, args) => {
-    await ctx.db.patch(args.id, args.data);
+    const userId = await getAuthenticatedUserId(ctx);
+    const section = await ctx.db
+      .query("sections")
+      .withIndex("by_clientId", (q) => q.eq("clientId", args.clientId))
+      .unique();
+
+    if (!section) {
+      throw new Error(`Section with clientId ${args.clientId} not found`);
+    }
+
+    // Verify ownership
+    if (section.user !== userId) {
+      throw new Error("Not authorized to update this section");
+    }
+
+    await ctx.db.patch(section._id, args.data);
   },
 });
 
-export const deleteSection = mutation({
-  args: { id: v.id("sections") },
+/**
+ * Delete a section by its client-generated ID (only if owned by authenticated user)
+ */
+export const deleteSectionByClientId = mutation({
+  args: { clientId: v.string() },
   handler: async (ctx, args) => {
-    await ctx.db.delete(args.id);
+    const userId = await getAuthenticatedUserId(ctx);
+    const section = await ctx.db
+      .query("sections")
+      .withIndex("by_clientId", (q) => q.eq("clientId", args.clientId))
+      .unique();
+
+    if (!section) {
+      return; // Already deleted or doesn't exist
+    }
+
+    // Verify ownership
+    if (section.user !== userId) {
+      throw new Error("Not authorized to delete this section");
+    }
+
+    await ctx.db.delete(section._id);
   },
 });
 
-export const getSectionById = query({
-  args: { id: v.id("sections") },
+/**
+ * Bulk upsert sections (for sync from local storage)
+ * Only syncs sections owned by the authenticated user
+ */
+export const upsertSections = mutation({
+  args: {
+    sections: v.array(
+      v.object({
+        clientId: v.string(),
+        name: v.string(),
+        notebookId: v.string(),
+        color: v.string(),
+      })
+    ),
+  },
   handler: async (ctx, args) => {
-    const section = await ctx.db.get(args.id);
-    return section;
+    const userId = await getAuthenticatedUserId(ctx);
+
+    for (const sectionData of args.sections) {
+      const existing = await ctx.db
+        .query("sections")
+        .withIndex("by_clientId", (q) => q.eq("clientId", sectionData.clientId))
+        .unique();
+
+      if (existing) {
+        // Verify ownership before updating
+        if (existing.user !== userId) {
+          console.warn(`Skipping section ${sectionData.clientId} - not owned by user`);
+          continue;
+        }
+        await ctx.db.patch(existing._id, sectionData);
+      } else {
+        // Create new section with authenticated user as owner
+        await ctx.db.insert("sections", { ...sectionData, user: userId });
+      }
+    }
   },
 });

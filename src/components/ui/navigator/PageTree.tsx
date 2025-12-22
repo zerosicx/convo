@@ -1,3 +1,4 @@
+import { useUser } from "@clerk/clerk-react";
 import { toast } from "@/hooks/use-toast";
 import { Page } from "@/lib/definitions";
 import { useDndStore } from "@/lib/stores/dnd-store";
@@ -79,11 +80,11 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
   // Get all the pages under the current level
   const params = useParams();
   const sectionId = params.sectionId;
-  const { getPageList, updatePageById, removePage } = usePageStore();
+  const { user } = useUser();
+  const { getPageList, updatePageById, removePage, createPage } = usePageStore();
   const pages = getPageList();
   const [creatingPage, setCreatingPage] = useState(false);
   const pageInputRef = useRef<ElementRef<"input">>(null);
-  const { createPage } = usePageStore();
   const [editing, setEditing] = useState<boolean>(false);
 
   // Use regex to match the notebook id; temporary while UUID4 is not implemented
@@ -94,19 +95,20 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
 
   const childPages = (() => {
     return Object.values(pages).filter(
-      (p) => p.parentPageId === currentPage.id
+      (p) => p.parentPageId === currentPage._id
     );
   })();
 
   const handleCreateNestedPage = (event: React.KeyboardEvent) => {
     // Do something
     event.stopPropagation();
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && user?.id) {
       createPage(
+        user.id,
         params.notebookId ?? "",
         params.sectionId ?? "",
         pageInputRef?.current?.value ?? "Untitled Page",
-        currentPage.id
+        currentPage._id
       );
       setCreatingPage(false);
     }
@@ -124,15 +126,15 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Update the section name
-    updatePageById(currentPage.id, {
+    updatePageById(currentPage._id, {
       title: e.target.value,
     });
   };
 
   const handleDeleteClick = () => {
-    removePage(currentPage.id);
+    removePage(currentPage._id);
     // Delete all related pages
-    removePage(currentPage.id);
+    removePage(currentPage._id);
   };
 
   // Sortable config
@@ -142,7 +144,7 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
     setNodeRef,
     // transform,
     // transition
-  } = useSortable({ id: currentPage.id });
+  } = useSortable({ id: currentPage._id });
 
   // TODO: Avoiding transform due to dnd-kit DragOverlay issue.
   // const transformStyle = {
@@ -160,14 +162,14 @@ export const PageItem = ({ currentPage }: { currentPage: Page }) => {
       <div
         className={cn(
           "flex flex-row justify-between items-center text-sm relative mx-2 rounded-md h-10",
-          params.pageId === currentPage.id && "bg-zinc-200/80",
+          params.pageId === currentPage._id && "bg-zinc-200/80",
           currentPage.level > 0 && "border-l-2 border-brand rounded-l-none"
         )}
       >
         <NavLink
           to={`notebook/${getNotebookId(
             currentPage.path
-          )}/section/${sectionId}/page/${currentPage.id}`}
+          )}/section/${sectionId}/page/${currentPage._id}`}
           className="w-full"
         >
           <div className="flex flex-row items-center pl-1 gap-1">

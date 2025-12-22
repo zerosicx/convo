@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useUser } from "@clerk/clerk-react";
 import noteImage from "@/assets/writing.webp";
 import { Button } from "@/components/ui/Button";
 import NoteMeta from "@/components/ui/NoteMeta";
@@ -10,6 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const NotePage = () => {
   const params = useParams();
+  const { user } = useUser();
   const { getPageById, updatePageById, createPage } = usePageStore();
   const nav = useNavigate();
   const page = params.pageId ? getPageById(params.pageId) : null;
@@ -35,16 +37,17 @@ const NotePage = () => {
 
   // Handle Content Change (extracted)
   const handleContentChange = useCallback(() => {
-    if (page?.id && editor) {
-      updatePageById(page.id, {
+    if (page?._id && editor) {
+      updatePageById(page._id, {
         data: JSON.stringify(editor.document),
       });
     }
-  }, [editor, page?.id, updatePageById]);
+  }, [editor, page?._id, updatePageById]);
 
   const handleCreateQuickNote = () => {
-    const newPage = createPage(null, null, "Quick Note 📝");
-    nav(`inbox/page/${newPage.id}`);
+    if (!user?.id) return;
+    const newPage = createPage(user.id, null, null, "Quick Note 📝");
+    nav(`inbox/page/${newPage._id}`);
   };
 
   // Handle missing pageId

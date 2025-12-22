@@ -5,7 +5,7 @@ const userId = "user-001";
 // Notebooks
 export const notebooks: Notebook[] = [
   {
-    id: "notebook-001",
+    _id: "notebook-001",
     name: "University Courses",
     user: userId,
     description: "Organise coursework and assignments by course.",
@@ -13,7 +13,7 @@ export const notebooks: Notebook[] = [
     sections: ["section-001", "section-002", "section-003"],
   },
   {
-    id: "notebook-002",
+    _id: "notebook-002",
     name: "Personal Development Plan",
     user: userId,
     description: "Track goals, habits, and personal projects.",
@@ -21,7 +21,7 @@ export const notebooks: Notebook[] = [
     sections: ["section-004", "section-005", "section-006"],
   },
   {
-    id: "notebook-003",
+    _id: "notebook-003",
     name: "Career Planning",
     user: userId,
     description: "Prepare for job applications and interviews.",
@@ -34,21 +34,21 @@ export const notebooks: Notebook[] = [
 export const sections: Section[] = [
   // University Courses Sections
   {
-    id: "section-001",
+    _id: "section-001",
     name: "Computer Science",
     user: userId,
     notebookId: "notebook-001",
     color: "#1E90FF", // Dodger Blue
   },
   {
-    id: "section-002",
+    _id: "section-002",
     name: "Mathematics",
     user: userId,
     notebookId: "notebook-001",
     color: "#8A2BE2", // Blue Violet
   },
   {
-    id: "section-003",
+    _id: "section-003",
     name: "Physics",
     user: userId,
     notebookId: "notebook-001",
@@ -57,21 +57,21 @@ export const sections: Section[] = [
 
   // Personal Development Sections
   {
-    id: "section-004",
+    _id: "section-004",
     name: "Habit Tracker",
     user: userId,
     notebookId: "notebook-002",
     color: "#32CD32", // Lime Green
   },
   {
-    id: "section-005",
+    _id: "section-005",
     name: "Reading List",
     user: userId,
     notebookId: "notebook-002",
     color: "#FFD700", // Gold
   },
   {
-    id: "section-006",
+    _id: "section-006",
     name: "Skill Development",
     user: userId,
     notebookId: "notebook-002",
@@ -80,21 +80,21 @@ export const sections: Section[] = [
 
   // Career Planning Sections
   {
-    id: "section-007",
+    _id: "section-007",
     name: "Resume Building",
     user: userId,
     notebookId: "notebook-003",
     color: "#FFA500", // Orange
   },
   {
-    id: "section-008",
+    _id: "section-008",
     name: "Interview Prep",
     user: userId,
     notebookId: "notebook-003",
     color: "#20B2AA", // Light Sea Green
   },
   {
-    id: "section-009",
+    _id: "section-009",
     name: "Portfolio Projects",
     user: userId,
     notebookId: "notebook-003",
@@ -106,7 +106,8 @@ export const sections: Section[] = [
 export const pages: Page[] = [
   // Computer Science Pages
   {
-    id: "page-001",
+    _id: "page-001",
+    user: userId,
     sectionId: "section-001",
     parentPageId: null,
     title: "Data Structures Notes",
@@ -118,7 +119,8 @@ export const pages: Page[] = [
     archived: false,
   },
   {
-    id: "page-002",
+    _id: "page-002",
+    user: userId,
     sectionId: "section-001",
     parentPageId: "page-001",
     title: "Graph Algorithms",
@@ -130,7 +132,8 @@ export const pages: Page[] = [
     archived: false,
   },
   {
-    id: "page-010",
+    _id: "page-010",
+    user: userId,
     sectionId: "section-001",
     parentPageId: "page-002",
     title: "Depth-First Search Details",
@@ -142,7 +145,8 @@ export const pages: Page[] = [
     archived: false,
   },
   {
-    id: "page-011",
+    _id: "page-011",
+    user: userId,
     sectionId: "section-001",
     parentPageId: "page-002",
     title: "Breadth-First Search Details",
@@ -154,7 +158,8 @@ export const pages: Page[] = [
     archived: false,
   },
   {
-    id: "page-003",
+    _id: "page-003",
+    user: userId,
     sectionId: "section-002",
     parentPageId: null,
     title: "Linear Algebra Notes",
@@ -166,7 +171,8 @@ export const pages: Page[] = [
     archived: false,
   },
   {
-    id: "page-012",
+    _id: "page-012",
+    user: userId,
     sectionId: "section-002",
     parentPageId: "page-003",
     title: "Matrix Operations",
@@ -180,7 +186,8 @@ export const pages: Page[] = [
 
   // Personal Development Pages
   {
-    id: "page-004",
+    _id: "page-004",
+    user: userId,
     sectionId: "section-004",
     parentPageId: null,
     title: "Daily Routine Tracker",
@@ -192,7 +199,8 @@ export const pages: Page[] = [
     archived: false,
   },
   {
-    id: "page-013",
+    _id: "page-013",
+    user: userId,
     sectionId: "section-004",
     parentPageId: "page-004",
     title: "Morning Routines",
@@ -204,7 +212,8 @@ export const pages: Page[] = [
     archived: false,
   },
   {
-    id: "page-005",
+    _id: "page-005",
+    user: userId,
     sectionId: "section-005",
     parentPageId: null,
     title: "Book Recommendations",
@@ -216,7 +225,8 @@ export const pages: Page[] = [
     archived: false,
   },
   {
-    id: "page-014",
+    _id: "page-014",
+    user: userId,
     sectionId: "section-005",
     parentPageId: "page-005",
     title: "Career Development Books",
@@ -230,7 +240,8 @@ export const pages: Page[] = [
 
   // Career Planning Pages
   {
-    id: "page-007",
+    _id: "page-007",
+    user: userId,
     sectionId: "section-007",
     parentPageId: null,
     title: "Resume Template",
@@ -242,7 +253,8 @@ export const pages: Page[] = [
     archived: false,
   },
   {
-    id: "page-015",
+    _id: "page-015",
+    user: userId,
     sectionId: "section-007",
     parentPageId: "page-007",
     title: "Technical Resume Tips",
@@ -254,7 +266,8 @@ export const pages: Page[] = [
     archived: false,
   },
   {
-    id: "page-008",
+    _id: "page-008",
+    user: userId,
     sectionId: "section-008",
     parentPageId: null,
     title: "Common Interview Questions",
@@ -266,7 +279,8 @@ export const pages: Page[] = [
     archived: false,
   },
   {
-    id: "page-016",
+    _id: "page-016",
+    user: userId,
     sectionId: "section-008",
     parentPageId: "page-008",
     title: "Behavioral Questions",
@@ -278,7 +292,8 @@ export const pages: Page[] = [
     archived: false,
   },
   {
-    id: "page-009",
+    _id: "page-009",
+    user: userId,
     sectionId: "section-009",
     parentPageId: null,
     title: "Project Showcase",

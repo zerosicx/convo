@@ -4,7 +4,7 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/convo/",
+  base: process.env.NODE_ENV === 'production' ? '/convo/' : '/',
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

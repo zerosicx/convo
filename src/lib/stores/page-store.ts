@@ -11,6 +11,7 @@ interface PageStore {
   getPageList: () => Page[];
   getPageById: (id: string) => Page | undefined;
   createPage: (
+    userId: string,
     notebookId: NotebookId | null,
     sectionId: SectionId | null,
     title: string,
@@ -45,24 +46,26 @@ export const usePageStore = create<PageStore>()(
       getPageById: (id: string): Page | undefined => get().pages[id],
 
       createPage: (
+        userId: string,
         notebookId: string | null,
         sectionId: string | null,
         title: string,
         parentPageId?: PageId,
         data: any = ""
       ) => {
-        const id = "page-" + uuid4();
+        const _id = "page-" + uuid4();
 
         let newPage: Page = {
-          id,
+          _id,
+          user: userId,
           sectionId,
           title,
           data,
           parentPageId: null,
           path:
             notebookId && sectionId
-              ? `${notebookId}/${sectionId}/${id}`
-              : `${id}`,
+              ? `${notebookId}/${sectionId}/${_id}`
+              : `${_id}`,
           level: 0,
           creationDate: new Date(),
           editedDate: new Date(),
@@ -74,17 +77,17 @@ export const usePageStore = create<PageStore>()(
           const parent = get().getPageById(parentPageId);
           newPage = {
             ...newPage,
-            parentPageId: parent?.id,
+            parentPageId: parent?._id,
             level: (parent?.level ?? 0) + 1,
-            path: `${parent?.path}/${id}`,
+            path: `${parent?.path}/${_id}`,
           };
         }
 
         // Add new page to pages and orderedPages (by pageId)
         set((state) => {
-          const newOrderedPages = [...state.orderedPages, id];
+          const newOrderedPages = [...state.orderedPages, _id];
           return {
-            pages: { ...state.pages, [id]: newPage },
+            pages: { ...state.pages, [_id]: newPage },
             orderedPages: newOrderedPages,
           };
         });
@@ -114,9 +117,9 @@ export const usePageStore = create<PageStore>()(
 
       addPage: (page: Page) =>
         set((state: PageStore) => {
-          const newOrderedPages = [...state.orderedPages, page.id];
+          const newOrderedPages = [...state.orderedPages, page._id];
           return {
-            pages: { ...state.pages, [page.id]: page },
+            pages: { ...state.pages, [page._id]: page },
             orderedPages: newOrderedPages,
           };
         }),
@@ -158,12 +161,7 @@ export const usePageStore = create<PageStore>()(
       reorderPages: (activeId: string, overId: string | null) => {
         const { updatePageById } = get();
 
-        console.log(`Inside reorder overId:  ${overId}`);
-
         const reorder = () => {
-          console.log(
-            `Reordering: activeId: ${activePage.title}, overId: ${overPage.title}`
-          );
           // Get the pages and use ArrayMove to swap them
           const newPages = (() => {
             const oldIndex = get().orderedPages.indexOf(activeId as string);
@@ -177,8 +175,7 @@ export const usePageStore = create<PageStore>()(
         };
 
         if (!overId) {
-          // Otherwise if it's dragging over itself
-          console.log(`Triggering else branch`);
+          // Dragging over itself
           updatePageById(activeId as string, {
             parentPageId: null,
             level: 0,
@@ -190,7 +187,7 @@ export const usePageStore = create<PageStore>()(
         const activePage = get().pages[activeId];
         const overPage = get().pages[overId];
 
-        if (overPage.parentPageId !== activePage.id) reorder();
+        if (overPage.parentPageId !== activePage._id) reorder();
 
         /**
          * [1] If the page levels are the same AND their parent IDs are not the same,
@@ -201,8 +198,8 @@ export const usePageStore = create<PageStore>()(
           activePage.level === overPage.level &&
           activePage.parentPageId !== overPage.parentPageId
         ) {
-          const newPath = overPage.path.replace(/[^/]+$/, activePage.id);
-          updatePageById(activePage.id, {
+          const newPath = overPage.path.replace(/[^/]+$/, activePage._id);
+          updatePageById(activePage._id, {
             parentPageId: overPage.parentPageId,
             path: newPath,
           });
@@ -211,9 +208,9 @@ export const usePageStore = create<PageStore>()(
            * If the active page is MORE nested, overPage becomes its parent.
            * Obviously they won't have the same parentId.
            */
-          const newPath = overPage.path + "/" + activePage.id;
-          updatePageById(activePage.id, {
-            parentPageId: overPage.id,
+          const newPath = overPage.path + "/" + activePage._id;
+          updatePageById(activePage._id, {
+            parentPageId: overPage._id,
             path: newPath,
           });
         } else if (
@@ -223,10 +220,10 @@ export const usePageStore = create<PageStore>()(
            * Make its level the same.
            */
           activePage.level < overPage.level &&
-          activePage.id !== overPage.parentPageId
+          activePage._id !== overPage.parentPageId
         ) {
           const newPath = overPage.path.replace(/[^/]+$/, activeId);
-          updatePageById(activePage.id, {
+          updatePageById(activePage._id, {
             parentPageId: overPage.parentPageId,
             level: overPage.level,
             path: newPath,

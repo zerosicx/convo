@@ -16,6 +16,7 @@ import type {
 import type * as notebooks from "../notebooks.js";
 import type * as pages from "../pages.js";
 import type * as sections from "../sections.js";
+import type * as utils_auth from "../utils/auth.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -29,6 +30,7 @@ declare const fullApi: ApiFromModules<{
   notebooks: typeof notebooks;
   pages: typeof pages;
   sections: typeof sections;
+  "utils/auth": typeof utils_auth;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

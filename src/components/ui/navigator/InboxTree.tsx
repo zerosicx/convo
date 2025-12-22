@@ -1,3 +1,4 @@
+import { useUser } from "@clerk/clerk-react";
 import { toast } from "@/hooks/use-toast";
 import { Page } from "@/lib/definitions";
 import { usePageStore } from "@/lib/stores/page-store";
@@ -81,9 +82,9 @@ export const InboxTreeItem = ({
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [editing, setEditing] = useState<boolean>(false);
-  const { getPageList, updatePageById, removePage } = usePageStore();
+  const { user } = useUser();
+  const { getPageList, updatePageById, removePage, createPage } = usePageStore();
   const pages = getPageList();
-  const { createPage } = usePageStore();
   const [creatingPage, setCreatingPage] = useState(false);
   const pageInputRef = useRef<ElementRef<"input">>(null);
   const params = useParams();
@@ -99,31 +100,30 @@ export const InboxTreeItem = ({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updatePageById(currentPage.id, {
+    updatePageById(currentPage._id, {
       title: e.target.value,
     });
   };
 
   const handleDeleteClick = () => {
-    removePage(currentPage.id);
+    removePage(currentPage._id);
   };
 
   const childPages = (() => {
     return Object.values(pages).filter(
-      (p) => p.parentPageId === currentPage.id
+      (p) => p.parentPageId === currentPage._id
     );
   })();
 
   const handleCreateNestedPage = (event: React.KeyboardEvent) => {
     event.stopPropagation();
-    if (event.key === "Enter") {
-      console.log("Creating a nested page gang gang");
-
+    if (event.key === "Enter" && user?.id) {
       createPage(
+        user.id,
         null,
         null,
         pageInputRef?.current?.value ?? "Untitled Page",
-        currentPage.id
+        currentPage._id
       );
       setCreatingPage(false);
     }
@@ -134,14 +134,14 @@ export const InboxTreeItem = ({
       <div
         className={cn(
           "flex flex-row justify-between items-center text-sm relative mx-2 rounded-md h-10",
-          params.pageId === currentPage.id && "bg-zinc-200/80"
+          params.pageId === currentPage._id && "bg-zinc-200/80"
         )}
       >
         <NavLink
           to={
             all
-              ? `pages/page/${currentPage.id}`
-              : `inbox/page/${currentPage.id}`
+              ? `pages/page/${currentPage._id}`
+              : `inbox/page/${currentPage._id}`
           }
           className="w-full"
         >

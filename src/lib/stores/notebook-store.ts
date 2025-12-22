@@ -10,8 +10,8 @@ interface NotebookStore {
   // CRUD Functions
   getNotebookById: (id: string) => Notebook | undefined;
   createNotebook: (
+    userId: string,
     name: string,
-    user: string,
     description?: string,
     colour?: string
   ) => Notebook;
@@ -34,23 +34,23 @@ export const useNotebookStore = create<NotebookStore>()(
         get().notebooks[id],
 
       createNotebook: (
+        userId: string,
         name: string,
-        user: string,
         description = "",
         colour = "#1e40af"
       ) => {
-        const id = "notebook-" + uuid4();
+        const _id = "notebook-" + uuid4();
         const newNotebook: Notebook = {
-          id,
+          _id,
           name,
-          user,
+          user: userId,
           description,
           colour,
           sections: [],
         };
 
         set((state) => ({
-          notebooks: { ...state.notebooks, [id]: newNotebook },
+          notebooks: { ...state.notebooks, [_id]: newNotebook },
         }));
 
         return newNotebook;
@@ -59,7 +59,7 @@ export const useNotebookStore = create<NotebookStore>()(
       // Update an entire notebook
       updateNotebook: (notebook: Notebook) =>
         set((state: NotebookStore) => ({
-          notebooks: { ...state.notebooks, [notebook.id]: notebook },
+          notebooks: { ...state.notebooks, [notebook._id]: notebook },
         })),
 
       // Update a notebook by ID with partial data
@@ -89,7 +89,7 @@ export const useNotebookStore = create<NotebookStore>()(
       // Add a new notebook
       addNotebook: (notebook: Notebook) =>
         set((state: NotebookStore) => ({
-          notebooks: { ...state.notebooks, [notebook.id]: notebook },
+          notebooks: { ...state.notebooks, [notebook._id]: notebook },
         })),
 
       // Clear all notebooks

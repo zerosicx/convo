@@ -54,7 +54,7 @@ const SearchModal = () => {
                   Most Recent
                 </Label>
                 {results.map((page) => (
-                  <SearchResultItem key={page.id} page={page} />
+                  <SearchResultItem key={page._id} page={page} />
                 ))}
               </>
             ) : (
@@ -63,7 +63,7 @@ const SearchModal = () => {
                   Search Results
                 </Label>
                 {results.map((page) => (
-                  <SearchResultItem key={page.id} page={page} />
+                  <SearchResultItem key={page._id} page={page} />
                 ))}
               </>
             )}
@@ -87,8 +87,8 @@ const SearchResultItem = ({ page }: { page: Page }) => {
       <NavLink
         to={
           notebook && section
-            ? `notebook/${notebook.id}/section/${section.id}/page/${page.id}`
-            : `pages/page/${page.id}`
+            ? `notebook/${notebook._id}/section/${section._id}/page/${page._id}`
+            : `pages/page/${page._id}`
         }
         onClick={() => {
           onClose();
@@ -100,7 +100,7 @@ const SearchResultItem = ({ page }: { page: Page }) => {
       <div className="w-full">
         {notebook && section ? (
           <NavLink
-            to={`notebook/${notebook.id}/section/${section.id}`}
+            to={`notebook/${notebook._id}/section/${section._id}`}
             onClick={() => {
               onClose();
             }}

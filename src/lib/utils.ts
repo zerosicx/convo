@@ -21,8 +21,6 @@ export function getRandomRedPinkHex(): string {
   return `#${toHex(red)}${toHex(green)}${toHex(blue)}`;
 }
 
-// Example usage
-console.log(getRandomRedPinkHex());
 
 export const getOs = () => {
   const os = ["Windows", "Linux", "Mac"]; // add your OS values

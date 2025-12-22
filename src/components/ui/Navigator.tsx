@@ -1,3 +1,4 @@
+import { useUser, UserButton } from "@clerk/clerk-react";
 import { useDndStore } from "@/lib/stores/dnd-store";
 import { usePageStore } from "@/lib/stores/page-store";
 import { useSectionStore } from "@/lib/stores/section-store";
@@ -50,9 +51,7 @@ export const Navigator = () => {
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    // Do something
     const { active, over } = event;
-    console.log(`overId: ${over?.id}`);
 
     if (active.id && active.id !== over?.id) {
       reorderPages(active.id as string, (over?.id as string) || null);
@@ -86,7 +85,7 @@ const NavBar = () => {
 
   return (
     <Sidebar minWidth={250}>
-      <header className="flex flex-row gap-4 items-center p-4 pb-0">
+      <header className="flex flex-row gap-4 items-center justify-between p-4 pb-0">
         <h2
           className="text-lg font-bold cursor-pointer"
           onClick={() => nav("/")}
@@ -94,6 +93,7 @@ const NavBar = () => {
         >
           Convo
         </h2>
+        <UserButton afterSignOutUrl="/" />
       </header>
       <div className="mx-3 flex flex-col gap-0">
         <div
@@ -171,6 +171,7 @@ const PageBar = () => {
   const params = useParams();
   const [creatingPage, setCreatingPage] = useState(false);
   const pageInputRef = useRef<ElementRef<"input">>(null);
+  const { user } = useUser();
   const { createPage } = usePageStore();
   const { getSectionById } = useSectionStore();
 
@@ -180,11 +181,10 @@ const PageBar = () => {
   const sectionId = params.sectionId;
 
   const handleCreatePage = (event: React.KeyboardEvent) => {
-    // Do something
     event.stopPropagation();
-    if (event.key === "Enter") {
-      console.log(pageInputRef?.current?.value);
+    if (event.key === "Enter" && user?.id) {
       createPage(
+        user.id,
         params?.notebookId ?? "",
         sectionId,
         pageInputRef?.current?.value || "Untitled Page"
@@ -237,6 +237,7 @@ const InboxBar = () => {
   const params = useParams();
   const [creatingPage, setCreatingPage] = useState(false);
   const pageInputRef = useRef<ElementRef<"input">>(null);
+  const { user } = useUser();
   const { createPage } = usePageStore();
   const location = useLocation();
 
@@ -248,11 +249,10 @@ const InboxBar = () => {
   }
 
   const handleCreatePage = (event: React.KeyboardEvent) => {
-    // Do something
     event.stopPropagation();
-    if (event.key === "Enter") {
-      console.log(pageInputRef?.current?.value);
+    if (event.key === "Enter" && user?.id) {
       createPage(
+        user.id,
         params?.notebookId ?? "",
         null,
         pageInputRef?.current?.value || "Untitled Page"
@@ -324,8 +324,6 @@ const Sidebar = ({
   const MAX_WIDTH = maxWidth; // Maximum width in px
 
   const handleRailClick = () => {
-    console.log("Rail clicked");
-    console.log(sidebarRef?.current?.clientWidth);
     setCollapsed(!collapsed);
   };
 

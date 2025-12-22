@@ -1,3 +1,4 @@
+import { Authenticated, Unauthenticated } from "convex/react";
 import conversationImage from "@/assets/conversation.webp";
 import convoLogo from "@/assets/convo-logo-192.png";
 import { Button } from "@/components/ui/Button";
@@ -11,10 +12,20 @@ const LandingPage = () => {
           <img src={convoLogo} className="w-10" />
           <h2 className="text-3xl font-bold">onvo</h2>
         </NavLink>
-        <div>
-          <NavLink to="/app">
-            <Button variant="brand">Get Convo</Button>
-          </NavLink>
+        <div className="flex flex-row gap-2">
+          <Unauthenticated>
+            <NavLink to="/sign-in">
+              <Button variant="ghost">Sign In</Button>
+            </NavLink>
+            <NavLink to="/sign-up">
+              <Button variant="brand">Sign Up</Button>
+            </NavLink>
+          </Unauthenticated>
+          <Authenticated>
+            <NavLink to="/app">
+              <Button variant="brand">Enter Convo</Button>
+            </NavLink>
+          </Authenticated>
         </div>
       </div>
       <div className="flex flex-row lg:gap-[150px] sm:gap-4 flex-wrap items-center justify-center md:mt-10 lg:m-0">
@@ -26,11 +37,20 @@ const LandingPage = () => {
             Welcome to <span className="text-brand font-bold">Convo</span>.
           </h1>
           <div className="flex flex-row gap-2">
-            <NavLink to="/app">
-              <Button size="lg" variant="brand">
-                Get Convo
-              </Button>
-            </NavLink>
+            <Unauthenticated>
+              <NavLink to="/sign-up">
+                <Button size="lg" variant="brand">
+                  Get Started
+                </Button>
+              </NavLink>
+            </Unauthenticated>
+            <Authenticated>
+              <NavLink to="/app">
+                <Button size="lg" variant="brand">
+                  Enter Convo
+                </Button>
+              </NavLink>
+            </Authenticated>
             <NavLink to="/about">
               <Button size="lg" variant="secondary">
                 Learn more

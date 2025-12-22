@@ -1,42 +1,56 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
+/**
+ * Schema for offline-first note-taking app.
+ * Using string IDs for client-generated UUIDs to support offline creation.
+ * Convex auto-generates `_id` on insert; we use `clientId` for local references.
+ */
 export default defineSchema({
   users: defineTable({
-    _id: v.id("users"),
+    clientId: v.string(), // Client-generated UUID
     username: v.string(),
     password: v.string(),
-  }),
+  }).index("by_clientId", ["clientId"]),
 
   notebooks: defineTable({
-    _id: v.id("notebooks"),
+    clientId: v.string(), // Client-generated UUID
     name: v.string(),
-    user: v.id("users"),
+    user: v.string(), // References users.clientId
     description: v.string(),
     colour: v.string(),
-    sections: v.array(v.id("sections")),
-  }).index("by_user", ["user"]),
+    sections: v.array(v.string()), // Array of section clientIds
+  })
+    .index("by_user", ["user"])
+    .index("by_clientId", ["clientId"]),
 
   sections: defineTable({
-    _id: v.id("sections"),
+    clientId: v.string(), // Client-generated UUID
     name: v.string(),
-    user: v.id("users"),
-    notebookId: v.id("notebooks"),
+    user: v.string(), // References users.clientId
+    notebookId: v.string(), // References notebooks.clientId
     color: v.string(),
-  }).index("by_user", ["user"]),
+  })
+    .index("by_user", ["user"])
+    .index("by_notebook", ["notebookId"])
+    .index("by_clientId", ["clientId"]),
 
   pages: defineTable({
-    _id: v.id("pages"),
-    user: v.id("users"),
-    sectionId: v.id("sections"),
-    parentPageId: v.optional(v.id("pages")),
+    clientId: v.string(), // Client-generated UUID
+    user: v.string(), // References users.clientId
+    sectionId: v.optional(v.string()), // References sections.clientId (nullable for inbox)
+    parentPageId: v.optional(v.string()), // References pages.clientId
     title: v.string(),
-    data: v.array(v.any()),
+    data: v.any(), // BlockNote JSON content
     path: v.string(),
     level: v.number(),
     tags: v.array(v.string()),
     archived: v.boolean(),
+    creationDate: v.number(), // Unix timestamp
+    editedDate: v.number(), // Unix timestamp
   })
     .index("by_user", ["user"])
-    .index("by_section", ["sectionId"]),
+    .index("by_section", ["sectionId"])
+    .index("by_parentPage", ["parentPageId"])
+    .index("by_clientId", ["clientId"]),
 });

@@ -37,7 +37,7 @@ const NoteMeta = () => {
   };
 
   const handleChange = () => {
-    updatePageById(currentPage?.id ?? "", {
+    updatePageById(currentPage?._id ?? "", {
       title: inputRef.current?.value || currentPage?.title,
     });
   };
@@ -48,7 +48,7 @@ const NoteMeta = () => {
         <p className="text-sm text-zinc-800">
           {notebook && (
             <NavLink
-              to={`notebook/${notebook.id}`}
+              to={`notebook/${notebook._id}`}
               className="hover:text-brand hover:font-medium"
             >
               {notebook.name} /
@@ -57,7 +57,7 @@ const NoteMeta = () => {
           <NavLink
             to={
               section
-                ? `notebook/${notebook?.id}/section/${section.id}`
+                ? `notebook/${notebook?._id}/section/${section._id}`
                 : `inbox`
             }
             className="hover:text-brand hover:font-medium"
@@ -68,8 +68,8 @@ const NoteMeta = () => {
             <NavLink
               to={
                 notebook && section
-                  ? `notebook/${notebook.id}/section/${section.id}/page/${page?.id}`
-                  : `inbox/page/${page?.id}`
+                  ? `notebook/${notebook._id}/section/${section._id}/page/${page?._id}`
+                  : `inbox/page/${page?._id}`
               }
               key={index}
               className="hover:text-brand hover:font-medium"

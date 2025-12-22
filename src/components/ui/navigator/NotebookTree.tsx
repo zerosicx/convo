@@ -1,3 +1,4 @@
+import { useUser } from "@clerk/clerk-react";
 import { toast } from "@/hooks/use-toast";
 import { useNotebookStore } from "@/lib/stores/notebook-store";
 import { usePageStore } from "@/lib/stores/page-store";
@@ -42,6 +43,7 @@ import { ScrollArea } from "../ScrollArea";
 import SectionTree from "./SectionTree";
 
 const NotebookTree = () => {
+  const { user } = useUser();
   const { notebooks, createNotebook, updateNotebookById, deleteNotebook } =
     useNotebookStore();
   const { removeSection } = useSectionStore();
@@ -53,11 +55,11 @@ const NotebookTree = () => {
 
   const handleCreateNewNotebook = (event: React.KeyboardEvent) => {
     event.stopPropagation();
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && user?.id) {
       // Submit
       createNotebook(
-        notebookInputRef?.current?.value ?? "Untitled Notebook",
-        "1"
+        user.id,
+        notebookInputRef?.current?.value ?? "Untitled Notebook"
       );
       setCreatingNotebook(false);
     }
@@ -114,7 +116,7 @@ const NotebookTree = () => {
       <NavGroup type="multiple" className="w-full">
         {Object.values(notebooks).map((notebook, index) => {
           return (
-            <NavGroupItem value={notebook.id} key={index}>
+            <NavGroupItem value={notebook._id} key={index}>
               <NavGroupTrigger>
                 <div className="flex flex-row items-center justify-between w-full">
                   {editing ? (
@@ -124,7 +126,7 @@ const NotebookTree = () => {
                       placeholder={notebook.name}
                       onKeyDown={handleKeyDown}
                       onChange={(e) => {
-                        handleChange(e.target.value, notebook.id);
+                        handleChange(e.target.value, notebook._id);
                       }}
                       onBlur={() => setEditing(false)}
                     />
@@ -167,7 +169,7 @@ const NotebookTree = () => {
                             <AlertDialogAction
                               className="bg-red-700"
                               onClick={() => {
-                                handleDeleteClick(notebook.id);
+                                handleDeleteClick(notebook._id);
                               }}
                             >
                               Continue
@@ -180,7 +182,7 @@ const NotebookTree = () => {
                 </div>
               </NavGroupTrigger>
               <NavGroupContent className="flex flex-col gap-2 ml-4">
-                <SectionTree notebookId={notebook.id} />
+                <SectionTree notebookId={notebook._id} />
               </NavGroupContent>
             </NavGroupItem>
           );

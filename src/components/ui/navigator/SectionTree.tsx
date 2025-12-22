@@ -1,3 +1,4 @@
+import { useUser } from "@clerk/clerk-react";
 import { toast } from "@/hooks/use-toast";
 import { NotebookId, Section } from "@/lib/definitions";
 import { usePageStore } from "@/lib/stores/page-store";
@@ -30,16 +31,14 @@ import { Label } from "../Label";
 
 export const SectionTree = ({ notebookId }: { notebookId: NotebookId }) => {
   const params = useParams();
-  const { sections, createSection } = useSectionStore();
+  const { user } = useUser();
+  const { getSectionsByNotebook, createSection } = useSectionStore();
   const [creatingSection, setCreatingSection] = useState<boolean>(false);
   const sectionInputRef = useRef<ElementRef<"input">>(null);
 
-  const getSectionsByNotebook = (notebookId: string) => {
-    return Object.values(sections).filter((s) => s.notebookId === notebookId);
-  };
-
   const createNewSection = (notebookId: NotebookId, name: string) => {
-    createSection(notebookId, name, "1");
+    if (!user?.id) return;
+    createSection(user.id, notebookId, name);
     setCreatingSection(false);
   };
   return (
@@ -49,7 +48,7 @@ export const SectionTree = ({ notebookId }: { notebookId: NotebookId }) => {
           <SectionItem
             notebookId={notebookId}
             section={section}
-            selected={params.sectionId === section.id}
+            selected={params.sectionId === section._id}
             key={index}
           />
         );
@@ -112,19 +111,19 @@ const SectionItem = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Update the section name
-    updateSectionById(section.id, {
+    updateSectionById(section._id, {
       name: e.target.value,
     });
   };
 
   const handleDeleteClick = () => {
-    removeSection(section.id);
+    removeSection(section._id);
     // Delete all related pages
-    removeBySection(section.id);
+    removeBySection(section._id);
   };
 
   return (
-    <NavLink to={`notebook/${notebookId}/section/${section.id}`}>
+    <NavLink to={`notebook/${notebookId}/section/${section._id}`}>
       <div
         className={cn(
           "text-left p-1 text-primary-foreground flex flex-row justify-between items-center",
